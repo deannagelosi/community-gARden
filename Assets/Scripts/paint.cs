@@ -21,8 +21,6 @@ public class paint : MonoBehaviour
         // mousePosition.z = Camera.main.nearClipPlane;
         mousePosition.z = Camera.main.nearClipPlane;
         Vector3 objPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-        Debug.Log("Mouse Postition: " + mousePosition);
-        Debug.Log("Obj Postition: " + objPosition);
 
         if (Input.GetKey(mouseLeft))
         {
