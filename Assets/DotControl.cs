@@ -5,12 +5,13 @@ using UnityEngine;
 public class DotControl : MonoBehaviour
 {
     float destroyTime = 5f;
-    static Color startColor = Color.blue;
-    static Color endColor = Color.magenta;
+    static Color startColor = new Color(201f/255f, 255f/255f, 191f/255f, 0.5f);
+    static Color endColor = new Color(255f/255f, 175f/255f, 189f/255f, 0.5f);
     // Amount to interpolate between start and end color
     static float colorInterp = 0f;
     // The amount to change interpolation by after each dot is generated
     static float interpStep = 0.05f;
+    static float scale = 1f;
 
     void Start () {
        Debug.Log("Color interpretation: " + DotControl.colorInterp);
@@ -21,7 +22,16 @@ public class DotControl : MonoBehaviour
        Color color = Color.Lerp(
            DotControl.startColor, DotControl.endColor, DotControl.colorInterp);
        
-       // Update static variables for interpolation for next dot generated
+       // Set scale for dot
+       float scale = DotControl.scale + Random.Range(-0.1f, 0.1f);
+       scale = Mathf.Clamp(scale, 0.5f, 2f);
+       gameObject.transform.localScale = new Vector3(scale, scale, scale);
+       DotControl.scale = scale;
+
+       //Call SetColor using the shader property name "_Color"
+       renderer.material.SetColor("_Color", color);
+
+       // Update static color variables for next dot generated
        // First, check if end of gradient has been reached, and if so, 
        // switch direction of interpolation
        if((DotControl.colorInterp >= 1 && DotControl.interpStep > 0) 
@@ -30,8 +40,6 @@ public class DotControl : MonoBehaviour
        }
        DotControl.colorInterp += DotControl.interpStep;
 
-       //Call SetColor using the shader property name "_Color" and setting the color to red
-       renderer.material.SetColor("_Color", color);
     }
     
     void Update () { 
