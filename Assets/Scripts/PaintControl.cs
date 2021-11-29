@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class paint : MonoBehaviour
+public class PaintControl : MonoBehaviour
 {
     public Transform baseDot;
     public KeyCode mouseLeft;
