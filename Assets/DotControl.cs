@@ -23,7 +23,7 @@ public class DotControl : MonoBehaviour
            DotControl.startColor, DotControl.endColor, DotControl.colorInterp);
        
        // Set scale for dot
-       float scale = DotControl.scale + Random.Range(-0.1f, 0.1f);
+       float scale = DotControl.scale + UnityEngine.Random.Range(-0.1f, 0.1f);
        scale = Mathf.Clamp(scale, 0.5f, 2f);
        gameObject.transform.localScale = new Vector3(scale, scale, scale);
        DotControl.scale = scale;
@@ -39,11 +39,14 @@ public class DotControl : MonoBehaviour
            DotControl.interpStep = DotControl.interpStep * -1;
        }
        DotControl.colorInterp += DotControl.interpStep;
-
+       
+       Hashtable args = new Hashtable();
+       args.Add("alpha", 0f);
+       args.Add("delay", 5f);
+       args.Add("time", 5f);
+       args.Add("onComplete", "destroy");
+       iTween.FadeTo(gameObject, args);
     }
     
-    void Update () { 
-        Destroy(gameObject, destroyTime); 
-    }
 
 }
