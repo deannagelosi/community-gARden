@@ -2,25 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class paint : MonoBehaviour
+public class MousePaint : MonoBehaviour
 {
     public Transform baseDot;
     public KeyCode mouseLeft;
     public static string toolType;
 
+    //This is Main Camera in the Scene
+    public Camera MainCamera;
+
     // Start is called before the first frame update
     void Start()
     {
-
+        if (Camera.main) {
+            MainCamera = Camera.main; // override user set camera if scene has a main camera
+        }
+        print(MainCamera);
     }
 
     // Update is called once per frame
     void Update()
     {
         Vector3 mousePosition = Input.mousePosition;
-        // mousePosition.z = Camera.main.nearClipPlane;
-        mousePosition.z = Camera.main.nearClipPlane;
-        Vector3 objPosition = Camera.main.ScreenToWorldPoint(mousePosition);
+        mousePosition.z = MainCamera.nearClipPlane;
+        Vector3 objPosition = MainCamera.ScreenToWorldPoint(mousePosition);
 
         if (Input.GetKey(mouseLeft))
         {

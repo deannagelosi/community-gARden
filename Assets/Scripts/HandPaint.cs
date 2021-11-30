@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PaintControl : MonoBehaviour
+public class HandPaint : MonoBehaviour
 {
     public Transform baseDot;
     public GameObject rightHand;
