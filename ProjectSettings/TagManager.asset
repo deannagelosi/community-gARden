@@ -3,20 +3,23 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - RightHand
+  - LeftHand
+  - UserHand
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - StaticSurfaces
+  - 
   - Water
   - UI
-  - DynamicSurfaces
+  - 
+  - 
   - Virtual3DObjects
   - VirtualTextures
-  - 
-  - 
-  - 
+  - StaticSurfaces
+  - DynamicSurfaces
   - 
   - 
   - 
