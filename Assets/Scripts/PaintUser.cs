@@ -11,10 +11,7 @@ namespace RoomAliveToolkit
     {
         public RATSkeletonProvider skeletonProvider;
         public int skeletonID = 0; //each Kinect has 6 possible skeleton slots, this number indicates which spot one would request (not quite the same as a User ID
-
-
         public bool updateFromKinect = true;
-
 
         public void Start()
         {
@@ -23,6 +20,7 @@ namespace RoomAliveToolkit
                 Debug.Log("User is missing a skeleton provider!");
                 return;
             }
+
         }
 
         public RATKinectSkeleton GetSkeleton()
@@ -64,17 +62,6 @@ namespace RoomAliveToolkit
                 return Vector3.zero;
         }
 
-        public Vector3 getHeadPosition()
-        {
-            if (IsReady())
-            {
-                Vector3 pos = GetSkeleton().jointPositions3D[(int)JointType.Head]; // this is reported in the coordinate system of the skeleton provider
-                return skeletonProvider.transform.localToWorldMatrix.MultiplyPoint(pos); //this moves it to world coordinates
-            }
-            else
-                return Vector3.zero;
-        }
-
         public void Update()
         {
 
@@ -86,10 +73,15 @@ namespace RoomAliveToolkit
                 {
                     if (updateFromKinect)
                     {
+                        if (gameObject.CompareTag("RightHand"))
+                        {
+                            transform.position = getRightHandPosition();
+                        }
 
-                        //transform.position = getHeadPosition();
-                        transform.position = getLeftHandPosition();
-
+                        else if (gameObject.CompareTag("LeftHand"))
+                        {
+                            transform.position = getLeftHandPosition();
+                        }
                     }
 
                 }
