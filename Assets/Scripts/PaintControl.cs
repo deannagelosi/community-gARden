@@ -5,37 +5,65 @@ using UnityEngine;
 public class PaintControl : MonoBehaviour
 {
     public Transform baseDot;
-    public KeyCode mouseLeft;
-    public static string toolType;
+    public GameObject rightHand;
+    public GameObject leftHand;
+
+    private bool colliding;
+
+    private bool rightActive; // is the right hand in the canvas
+    private bool leftActive; // is the left hand in the canvas
+    private GameObject currentActive; // the hand most recently in the canvas
 
     // Start is called before the first frame update
     void Start()
     {
+        rightActive = false;
+        leftActive = false;
 
+        // Rotate brush dot to line up with canvas
+        baseDot.rotation = transform.rotation;
+        baseDot.transform.Rotate(-90, 0, 0);
     }
 
     // Update is called once per frame
     void Update()
     {
-        Vector3 mousePosition = Input.mousePosition;
-        // mousePosition.z = Camera.main.nearClipPlane;
-        mousePosition.z = Camera.main.nearClipPlane;
-        Vector3 objPosition = Camera.main.ScreenToWorldPoint(mousePosition);
-        Debug.Log("Mouse Postition: " + mousePosition);
-        Debug.Log("Obj Postition: " + objPosition);
-
-        if (Input.GetKey(mouseLeft))
+        if (rightActive || leftActive)
         {
-            Instantiate(baseDot, objPosition, baseDot.rotation);
+            // Note: Z axis will include the depth of the canvas
+            Vector3 brushPosition = currentActive.transform.position;
+            Instantiate(baseDot, brushPosition, baseDot.rotation);
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("RightHand"))
+        {
+            print("Right: True");
+            rightActive = true;
+            currentActive = other.gameObject;
+        }
+        else if (other.gameObject.CompareTag("LeftHand"))
+        {
+            print("Left: True");
+            leftActive = true;
+            currentActive = other.gameObject;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("RightHand"))
+        {
+            print("Right: False");
+            rightActive = false;
+        }
+
+        else if (other.gameObject.CompareTag("LeftHand"))
+        {
+            print("Left: False");
+            leftActive = false;
         }
     }
 }
-
-// Vector3 worldPosition
-
-// void Update()
-// {
-//     Vector3 mousePos = Input.mousePosition;
-//     mousePos.z = Camera.main.nearClipPlane;
-//     worldPosition = Camera.main.ScreenToWorldPoint(mousePos);
-// }
