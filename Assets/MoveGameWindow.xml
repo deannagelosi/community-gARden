@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <MoveWindowDataContainer xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <xLoc>1600</xLoc>
+  <xLoc>2000</xLoc>
   <yLoc>0</yLoc>
-  <width>800</width>
-  <height>600</height>
+  <width>2048</width>
+  <height>768</height>
 </MoveWindowDataContainer>
