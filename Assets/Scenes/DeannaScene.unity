@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.44791836, g: 0.497921, b: 0.57547784, a: 1}
+  m_IndirectSpecularColor: {r: 0.4479187, g: 0.49792176, b: 0.5754789, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -2010,7 +2010,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 417721760}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 98a4c16ca339cc94b8cd02dcfbb44e1b, type: 3}
   m_Name: 
@@ -3793,7 +3793,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 754882814}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6b364d8d33b03664a9e424c330da18d8, type: 3}
   m_Name: 
@@ -7102,8 +7102,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1f1d37c1e5e740ed9bbc97ccd847a68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  day: {fileID: 0}
-  night: {fileID: 0}
+  day: {fileID: 505404614}
+  night: {fileID: 1396045691}
 --- !u!65 &1409817851
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -7112,7 +7112,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1409817847}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1.9999999, y: 1.9600005, z: 0.20000003}
@@ -7343,7 +7343,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1461234515}
   m_LocalRotation: {x: 0.051540796, y: 0.17341019, z: -0.009088033, w: 0.9834581}
-  m_LocalPosition: {x: -0.163, y: 0.912, z: 2.908}
+  m_LocalPosition: {x: -0.26, y: 0.942, z: 2.64}
   m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
   m_Children: []
   m_Father: {fileID: 632733876}
@@ -7980,8 +7980,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1610531269}
   - component: {fileID: 1610531270}
-  - component: {fileID: 1610531271}
   - component: {fileID: 1610531272}
+  - component: {fileID: 1610531271}
   m_Layer: 9
   m_Name: Moon
   m_TagString: Untagged
@@ -8066,8 +8066,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e1f1d37c1e5e740ed9bbc97ccd847a68, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  day: {fileID: 0}
-  night: {fileID: 0}
+  day: {fileID: 505404614}
+  night: {fileID: 1396045691}
 --- !u!65 &1610531272
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -8076,7 +8076,7 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1610531268}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 2.7999997, y: 2.8000007, z: 0.20000005}
