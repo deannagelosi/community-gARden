@@ -931,7 +931,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 61bf6195c133741b394a6632857681b0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseHandObj: {fileID: 0}
+  baseHandObj: {fileID: 3203566547261332894, guid: adb2a390dad7169449132e4fcf8ac151, type: 3}
   skeletonProviders: []
   maxBodies: 1
 --- !u!1001 &1497415848

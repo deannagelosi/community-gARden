@@ -5,6 +5,7 @@ using UnityEngine;
 namespace RoomAliveToolkit
 {
 
+    // Class object for collecting all the tracked hand data
     public class TrackedHand
     {
         public RATSkeletonProvider skelProvider { get; set; }
@@ -16,15 +17,14 @@ namespace RoomAliveToolkit
         public GameObject handObject;
     }
 
+    // Main HandControl program
     public class HandControl : MonoBehaviour
     {
-        // public Transform baseHandObj;
         public GameObject baseHandObj;
         public List<RATSkeletonProvider> skeletonProviders;
-        public int maxBodies = 1; // Track 1 skeleton by default. Kinect can track up to 6 skeletons.
+        public int maxBodies = 1; // Track 1 skeleton by default (Kinect can track up to 6)
 
-        // Track and reuse hand game objects
-        private List<GameObject> activeHands = new List<GameObject>();
+        // Collect inactive hands for re-use (instead of instantiating more and more)
         private List<GameObject> inactiveHands = new List<GameObject>();
         private List<TrackedHand> prevFrameHands = new List<TrackedHand>();
 
@@ -48,6 +48,44 @@ namespace RoomAliveToolkit
         void Update()
         {
             // Gather all the detected hands accross all providers and skeleton ids
+            List<TrackedHand> currFrameHands = gatherAllHands(skeletonProviders);
+
+            // Clear old match data and check for new matches
+            resetAndFindMatch(currFrameHands, prevFrameHands);
+            // To Do: ^ make sure passed in vars modifications are being seen after
+
+            // To Do: merge and de-dup found hands in close proximity
+
+            // Manage CURRENT hand game objects
+            foreach (TrackedHand currHand in currFrameHands)
+            {
+                if (currHand.frameMatch)
+                {
+                    // Not New. Retrieved this hand from the previous frame list
+                    currHand.handObject.transform.position = currHand.position;
+                }
+                else if (!currHand.frameMatch)
+                {
+                    // New. This hand was not seen in the previous frame
+                    currHand.handObject = getHandObject();
+                    currHand.handObject.transform.position = currHand.position;
+                }
+            }
+
+            // Manage PREVIOUS hand game objects
+            foreach (TrackedHand prevHand in prevFrameHands)
+            {
+                // Previous hand was not found in the current frame
+                if (!prevHand.frameMatch) { discardHand(prevHand.handObject); }
+            }
+
+            // Save current matches for the next frame
+            prevFrameHands = new List<TrackedHand>();
+            prevFrameHands = currFrameHands;
+        }
+
+        private List<TrackedHand> gatherAllHands(List<RATSkeletonProvider> skeletonProviders)
+        {
             List<TrackedHand> currFrameHands = new List<TrackedHand>();
 
             if (skeletonProviders.Count > 0)
@@ -72,44 +110,7 @@ namespace RoomAliveToolkit
                     }
                 }
             }
-
-            // Clear all previous matches and check for new matches
-            resetAndFindMatch(currFrameHands, prevFrameHands);
-            // To Do: ^ make sure passed in vars modifications are being seen after
-
-            // To Do: merge and de-dup found hands in close proximity
-
-            // Manage Current Hands GameObjects
-            foreach (TrackedHand currHand in currFrameHands)
-            {
-                // if not new (ie. a match with previous frame)
-                if (currHand.frameMatch)
-                {
-                    // The checkMatches function copied the matching prevHand GameObject.
-                    currHand.handObject.transform.position = currHand.position;
-                }
-                // if new (ie. no match with previous frame)
-                else if (!currHand.frameMatch)
-                {
-                    currHand.handObject = getHandObject();
-                    currHand.handObject.transform.position = currHand.position;
-                }
-            }
-
-            // Manage Previous Hands GameObjects
-            foreach (TrackedHand prevHand in prevFrameHands)
-            {
-                // If lost (no match with current)
-                if (!prevHand.frameMatch)
-                {
-                    // Hand is no longer seen. Deactivate and set aside for a new match to use
-                    recycleHandObject(prevHand.handObject);
-                }
-            }
-
-            // Save current matches for the next frame
-            prevFrameHands = new List<TrackedHand>();
-            prevFrameHands = currFrameHands;
+            return currFrameHands;
         }
 
         private List<TrackedHand> getHandPositions(RATSkeletonProvider skelProvider, int skelID, RATKinectSkeleton skel)
@@ -180,40 +181,29 @@ namespace RoomAliveToolkit
             }
         }
 
-
         private GameObject getHandObject()
         {
-            // Return an object from the inactive list
-            // If none already avaliable, instantiate a new object
-            // Set active, add to the active list, and return it
-            GameObject getHand;
+            // Recycle old inactive hand if available, or make a new one
+            GameObject handObject;
 
             if (inactiveHands.Count > 0)
             {
-                // Inactive objects avaliable
-                getHand = inactiveHands[0];
-                // Move to active list
+                handObject = inactiveHands[0];
                 inactiveHands.RemoveAt(0);
-                activeHands.Add(getHand);
             }
             else
             {
-                getHand = Instantiate(baseHandObj, new Vector3(0, 0, 0), Quaternion.identity);
-                activeHands.Add(getHand);
+                handObject = Instantiate(baseHandObj, new Vector3(0, 0, 0), Quaternion.identity);
             }
-
-            getHand.SetActive(true);
-            return getHand;
+            handObject.SetActive(true);
+            return handObject;
         }
 
-        private void recycleHandObject(GameObject unusedObj)
+        private void discardHand(GameObject obj)
         {
-            // Deactivate
-            unusedObj.SetActive(false);
-            // Remove from active list
-            activeHands.Remove(unusedObj);
-            // add to inactive list
-            inactiveHands.Add(unusedObj);
+            // Deactivate and add to inactive list
+            obj.SetActive(false);
+            inactiveHands.Add(obj);
         }
 
     }
