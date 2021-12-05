@@ -4,28 +4,29 @@ using UnityEngine;
 
 namespace RoomAliveToolkit
 {
-    public struct ValidSkel
-    {
-        public RATSkeletonProvider skelProvider { get; set; }
-        public RATKinectSkeleton skel { get; set; }
-    }
 
-    public struct TrackedHand
+    public class TrackedHand
     {
         public RATSkeletonProvider skelProvider { get; set; }
         public int skelID { get; set; }
         public string side { get; set; }
         public Vector3 position { get; set; }
+
+        public bool frameMatch;
+        public GameObject handObject;
     }
 
     public class HandControl : MonoBehaviour
     {
+        // public Transform baseHandObj;
+        public GameObject baseHandObj;
         public List<RATSkeletonProvider> skeletonProviders;
         public int maxBodies = 1; // Track 1 skeleton by default. Kinect can track up to 6 skeletons.
 
         // Track and reuse hand game objects
         private List<GameObject> activeHands = new List<GameObject>();
         private List<GameObject> inactiveHands = new List<GameObject>();
+        private List<TrackedHand> prevFrameHands = new List<TrackedHand>();
 
         // Start is called before the first frame update
         void Start()
@@ -46,88 +47,69 @@ namespace RoomAliveToolkit
         // Update is called once per frame
         void Update()
         {
-            // Gather all the valid skeletons visible to the kinect(s)
-            List<ValidSkel> validSkels = new List<ValidSkel>();
             // Gather all the detected hands accross all providers and skeleton ids
-            List<TrackedHand> allHands = new List<TrackedHand>();
+            List<TrackedHand> currFrameHands = new List<TrackedHand>();
 
             if (skeletonProviders.Count > 0)
             {
                 foreach (RATSkeletonProvider skelProvider in skeletonProviders)
                 {
+                    // To Do: check these outputs show unique providers
+                    print("Skel Provider:");
+                    print(skelProvider);
+
                     for (int skelID = 1; skelID <= maxBodies; skelID++) // Loops 1 thru maxBodies
                     {
                         RATKinectSkeleton skel = skelProvider.GetKinectSkeleton(skelID);
                         if (skel != null && skel.valid)
                         {
-                            validSkels.Add(new ValidSkel() // to do: do we even need this data again?
-                            {
-                                skelProvider = skelProvider,
-                                skel = skel,
-                            });
-
                             List<TrackedHand> skelHands = getHandPositions(skelProvider, skelID, skel);
                             if (skelHands != null)
                             {
-                                allHands.AddRange(skelHands);
+                                currFrameHands.AddRange(skelHands);
                             }
                         }
                     }
                 }
             }
 
-            // To Do: merge and de-dup hands in close proximity
+            // Clear all previous matches and check for new matches
+            resetAndFindMatch(currFrameHands, prevFrameHands);
+            // To Do: ^ make sure passed in vars modifications are being seen after
 
-            // Render hand game objects at each position
-            // deactivate hands game objects that are lost
-            // - need to track between frames which hand position is which GM, to detect loss
-            // - use the provider and body id. 
-            //   - if active in last frame is seen in new frame, use the same GM
-            //   - if seen in last frame is not seen in this one, its a loss. deactivate and send to inactive list
-            //   - if not seen in last frame, but seen in this one, pull a one from the inactive list (or instantiate one if list is empty)
-            // Collect and reuse hand objects that are lost
+            // To Do: merge and de-dup found hands in close proximity
 
+            // Manage Current Hands GameObjects
+            foreach (TrackedHand currHand in currFrameHands)
+            {
+                // if not new (ie. a match with previous frame)
+                if (currHand.frameMatch)
+                {
+                    // The checkMatches function copied the matching prevHand GameObject.
+                    currHand.handObject.transform.position = currHand.position;
+                }
+                // if new (ie. no match with previous frame)
+                else if (!currHand.frameMatch)
+                {
+                    currHand.handObject = getHandObject();
+                    currHand.handObject.transform.position = currHand.position;
+                }
+            }
 
-            // match between frames on:
-            // - same provider
-            // - same skel id
-            // - same hand (L or R)
+            // Manage Previous Hands GameObjects
+            foreach (TrackedHand prevHand in prevFrameHands)
+            {
+                // If lost (no match with current)
+                if (!prevHand.frameMatch)
+                {
+                    // Hand is no longer seen. Deactivate and set aside for a new match to use
+                    recycleHandObject(prevHand.handObject);
+                }
+            }
 
-
-
-
-
-
-            // 3. manage all the hand position coordinates
-            // 4. straight populate render positions (stretch - calc'ed with pairing)
-            // 5. dont need to manage adding/removing to list since its remade each time, but
-            //    need a global way to keep track of the GMs so you are updating the same one each time right?
-            // dedup render list and manage renders and transforms
-            // manage active/inactive lists
-
-
-
-            // if (skeletonProvider != null)
-            // {
-            //     RATKinectSkeleton skeleton = GetSkeleton();
-
-            //     if (skeleton != null && skeleton.valid)
-            //     {
-            //         if (updateFromKinect)
-            //         {
-            //             if (gameObject.CompareTag("RightHand"))
-            //             {
-            //                 transform.position = getRightHandPosition();
-            //             }
-
-            //             else if (gameObject.CompareTag("LeftHand"))
-            //             {
-            //                 transform.position = getLeftHandPosition();
-            //             }
-            //         }
-            //     }
-            // }
-
+            // Save current matches for the next frame
+            prevFrameHands = new List<TrackedHand>();
+            prevFrameHands = currFrameHands;
         }
 
         private List<TrackedHand> getHandPositions(RATSkeletonProvider skelProvider, int skelID, RATKinectSkeleton skel)
@@ -169,6 +151,69 @@ namespace RoomAliveToolkit
                 }
             }
             return hands;
+        }
+
+        private void resetAndFindMatch(List<TrackedHand> currentHands, List<TrackedHand> prevHands)
+        {
+            // Set them all to false first, clearing any old match data from previous frames
+            foreach (TrackedHand currHand in currentHands) { currHand.frameMatch = false; }
+            foreach (TrackedHand prevHand in prevHands) { prevHand.frameMatch = false; }
+
+            // Find matches
+            foreach (TrackedHand currHand in currentHands)
+            {
+                foreach (TrackedHand prevHand in prevHands)
+                {
+                    // match between frames on: provider, skel id, hand (L or R)
+                    bool provider = currHand.skelProvider == prevHand.skelProvider;
+                    bool id = currHand.skelID == prevHand.skelID;
+                    bool hand = currHand.side == prevHand.side;
+
+                    if (provider && id && hand)
+                    {
+                        currHand.frameMatch = true;
+                        prevHand.frameMatch = true;
+
+                        currHand.handObject = prevHand.handObject;
+                    }
+                }
+            }
+        }
+
+
+        private GameObject getHandObject()
+        {
+            // Return an object from the inactive list
+            // If none already avaliable, instantiate a new object
+            // Set active, add to the active list, and return it
+            GameObject getHand;
+
+            if (inactiveHands.Count > 0)
+            {
+                // Inactive objects avaliable
+                getHand = inactiveHands[0];
+                // Move to active list
+                inactiveHands.RemoveAt(0);
+                activeHands.Add(getHand);
+            }
+            else
+            {
+                getHand = Instantiate(baseHandObj, new Vector3(0, 0, 0), Quaternion.identity);
+                activeHands.Add(getHand);
+            }
+
+            getHand.SetActive(true);
+            return getHand;
+        }
+
+        private void recycleHandObject(GameObject unusedObj)
+        {
+            // Deactivate
+            unusedObj.SetActive(false);
+            // Remove from active list
+            activeHands.Remove(unusedObj);
+            // add to inactive list
+            inactiveHands.Add(unusedObj);
         }
 
     }
