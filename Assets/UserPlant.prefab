@@ -109,3 +109,4 @@ MonoBehaviour:
   - {fileID: 21300056, guid: 49d71e0f00fc4be4b988db85bb6f46d8, type: 3}
   - {fileID: 21300058, guid: 49d71e0f00fc4be4b988db85bb6f46d8, type: 3}
   - {fileID: 21300060, guid: 49d71e0f00fc4be4b988db85bb6f46d8, type: 3}
+  rainScript: {fileID: 0}

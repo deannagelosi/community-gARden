@@ -6,6 +6,7 @@ public class Grow : MonoBehaviour
 {
     public Sprite[] buddedSprites;
     public Sprite[] blossomedSprites;
+    public Rain rainScript;
     bool gotSunlight = false;
     bool gotRain = false;
     bool budded = false;
@@ -26,6 +27,9 @@ public class Grow : MonoBehaviour
             gotSunlight = true;
         }
         // if rained, then gotRain = true
+        if (rainScript.groundWet) {
+            gotRain = true;
+        }
         if (!budded && ((gotSunlight && !gotRain) || (!gotSunlight && gotRain))) {
             // make plant bud, but not bloom completely
             Sprite buddedSprite = buddedSprites[Random.Range(0, buddedSprites.Length)];
