@@ -29,9 +29,9 @@ public class Rain : MonoBehaviour
             }
         }
         if (groundWet) {
-            ground.GetComponent<SpriteRenderer>().color = new Color(164, 164, 164, 255);
+            ground.GetComponent<SpriteRenderer>().color = new Color32(120, 120, 120, 255);
         } else {
-            ground.GetComponent<SpriteRenderer>().color = new Color(255, 255, 255, 255);
+            ground.GetComponent<SpriteRenderer>().color = new Color32(191, 191, 191, 255);
         }
     }
 
