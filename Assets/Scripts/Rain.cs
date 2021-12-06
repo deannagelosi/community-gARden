@@ -4,28 +4,22 @@ using UnityEngine;
 
 public class Rain : MonoBehaviour
 {
-    public ParticleSystem rain;
+    public GameObject rain;
     public GameObject ground;
-    private bool raining = false;
-    float rainStopTime = 0.0f;
-    public bool groundWet = false;
-    // Start is called before the first frame update
-    void Start()
-    {
-        raining = false;
-        groundWet = false;
-    }
+    static bool raining = false;
+    static float rainStopTime = 0.0f;
+    static bool groundWet = false;
 
     // Update is called once per frame
     void Update()
     {
-        if (raining) {
-            rain.Play();
+        if (Rain.raining) {
+            rain.SetActive(true);
         } else {
-            rain.Stop();
+            rain.SetActive(false);
             // ground is dry again 5 seconds after rain stops falling
-            if (Time.time - rainStopTime >= 5) {
-                groundWet = false;
+            if (Time.time - Rain.rainStopTime >= 5) {
+                Rain.groundWet = false;
             }
         }
         if (groundWet) {
@@ -38,12 +32,13 @@ public class Rain : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log("Collided with " + gameObject.name);
-        if (raining) {
-            raining = false;
-            rainStopTime = Time.time;
+        Debug.Log("Raining " + Rain.raining);
+        if (Rain.raining) {
+            Rain.raining = false;
+            Rain.rainStopTime = Time.time;
         } else {
-            raining = true;
-            groundWet = true;
+            Rain.raining = true;
+            Rain.groundWet = true;
         }
     }
 }
