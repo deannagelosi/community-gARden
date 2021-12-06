@@ -6,18 +6,19 @@ public class Grow : MonoBehaviour
 {
     public Sprite[] buddedSprites;
     public Sprite[] blossomedSprites;
-    public Rain rainScript;
     bool gotSunlight = false;
     bool gotRain = false;
     bool budded = false;
     bool blossomed = false;
     SpriteRenderer sr;
+    AudioSource audioSource;
     
 
     // Start is called before the first frame update
     void Start()
     {
         sr = gameObject.GetComponent<SpriteRenderer>();
+        audioSource = gameObject.GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -27,18 +28,20 @@ public class Grow : MonoBehaviour
             gotSunlight = true;
         }
         // if rained, then gotRain = true
-        if (rainScript.groundWet) {
+        if (GameObject.Find("Rain")) {
             gotRain = true;
         }
         if (!budded && ((gotSunlight && !gotRain) || (!gotSunlight && gotRain))) {
             // make plant bud, but not bloom completely
             Sprite buddedSprite = buddedSprites[Random.Range(0, buddedSprites.Length)];
             sr.sprite = buddedSprite;
+            audioSource.Play();
         }
         if (!blossomed && gotSunlight && gotRain) {
             // bloom flower completely
             Sprite blossomedSprite = blossomedSprites[Random.Range(0, blossomedSprites.Length)];
             sr.sprite = blossomedSprite;
+            audioSource.Play();
         }
         budded = gotSunlight || gotRain;
         blossomed = gotSunlight && gotRain;
