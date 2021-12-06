@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace RoomAliveToolkit
@@ -8,11 +9,10 @@ namespace RoomAliveToolkit
     // Class object for collecting all the tracked hand data
     public class TrackedHand
     {
-        public RATSkeletonProvider skelProvider { get; set; }
-        public int skelID { get; set; }
-        public string side { get; set; }
+        // public RATSkeletonProvider skelProvider { get; set; }
+        // public int skelID { get; set; }
+        public List<string> handID { get; set; }
         public Vector3 position { get; set; }
-
         public bool frameMatch;
         public GameObject handObject;
     }
@@ -27,6 +27,7 @@ namespace RoomAliveToolkit
         // Collect inactive hands for re-use (instead of instantiating more and more)
         private List<GameObject> inactiveHands = new List<GameObject>();
         private List<TrackedHand> prevFrameHands = new List<TrackedHand>();
+        private float objDiameter;
 
         // Start is called before the first frame update
         void Start()
@@ -42,6 +43,8 @@ namespace RoomAliveToolkit
                 Debug.LogError("Missing a skeleton provider");
                 return;
             }
+
+            objDiameter = baseHandObj.GetComponent<SphereCollider>().radius * 2;
         }
 
         // Update is called once per frame
@@ -50,11 +53,12 @@ namespace RoomAliveToolkit
             // Gather all the detected hands accross all providers and skeleton ids
             List<TrackedHand> currFrameHands = gatherAllHands(skeletonProviders);
 
+            // Current Task: Add code to de-dupe hands list, merging hands in proximity
+            mergeProximityMatches(currFrameHands);
+
             // Clear old match data and check for new matches
             resetAndFindMatch(currFrameHands, prevFrameHands);
             // To Do: ^ make sure passed in vars modifications are being seen after
-
-            // To Do: merge and de-dup found hands in close proximity
 
             // Manage CURRENT hand game objects
             foreach (TrackedHand currHand in currFrameHands)
@@ -90,6 +94,7 @@ namespace RoomAliveToolkit
 
             if (skeletonProviders.Count > 0)
             {
+                int providerID = 1;
                 foreach (RATSkeletonProvider skelProvider in skeletonProviders)
                 {
                     // To Do: check these outputs show unique providers
@@ -101,19 +106,72 @@ namespace RoomAliveToolkit
                         RATKinectSkeleton skel = skelProvider.GetKinectSkeleton(skelID);
                         if (skel != null && skel.valid)
                         {
-                            List<TrackedHand> skelHands = getHandPositions(skelProvider, skelID, skel);
+                            string providerSkelID = $"SP{providerID}-SK{skelID}";
+
+                            List<TrackedHand> skelHands = getHandPositions(skelProvider, providerSkelID, skel);
                             if (skelHands != null)
                             {
                                 currFrameHands.AddRange(skelHands);
                             }
                         }
                     }
+                    providerID++;
                 }
             }
             return currFrameHands;
         }
 
-        private List<TrackedHand> getHandPositions(RATSkeletonProvider skelProvider, int skelID, RATKinectSkeleton skel)
+        private List<TrackedHand> mergeProximityMatches(List<TrackedHand> handsList)
+        {
+
+            // if matched, set handID to 'merged', then create merged list for match checker to compare with instead
+            // merged list is the list of all the handIDs in the merge
+            // list of merged could be more than 2. two hands together is 4 seen hands across 2 providers
+            // Vector3.Distance
+            List<TrackedHand> mergedList = new List<TrackedHand>();
+
+            foreach (TrackedHand hand in handsList)
+            {
+                // make list of merged hands. new class that contains the hand class, plus list of ids?
+                // new class in total?
+
+                Vector3 pos = hand.position;
+                List<TrackedHand> near = handsList.FindAll(h => Vector3.Distance(pos, h.position) < objDiameter);
+
+                // list of all the hands that this one matches, including itself
+                // merge these together and save
+                TrackedHand merged = mergeHands(near);
+
+                mergedList.Add(merged);
+
+            }
+
+            // tasks: what about the matching system's use of provider/skel/hand ids?
+            //  - once you merge, that will be in the current and that gets pushed to previous, with out that id
+            //  - merge matches should also list all the handIds they are made up of
+            //  - see about a method to compare un-ordered lists
+
+            return mergedList;
+        }
+
+        private TrackedHand mergeHands(List<TrackedHand> near)
+        {
+
+            return new TrackedHand()
+            {
+                handID = near.Select(h => h.handID[0]).ToList()
+                // Vector3 position = average position
+                // bool frameMatch = false 
+                // GameObject handObject = pick one, recycle the rest
+
+            };
+
+            // to do: here in the code ^
+            // to do: can this function code be merged into the calling function
+
+        }
+
+        private List<TrackedHand> getHandPositions(RATSkeletonProvider skelProvider, string providerSkelID, RATKinectSkeleton skel)
         {
             List<TrackedHand> hands = new List<TrackedHand>();
 
@@ -134,9 +192,7 @@ namespace RoomAliveToolkit
                 {
                     hands.Add(new TrackedHand()
                     {
-                        skelProvider = skelProvider,
-                        skelID = skelID,
-                        side = "Right",
+                        handID = new List<string> { $"{providerSkelID}-Right" },
                         position = worldPosRight
                     });
                 }
@@ -144,9 +200,7 @@ namespace RoomAliveToolkit
                 {
                     hands.Add(new TrackedHand()
                     {
-                        skelProvider = skelProvider,
-                        skelID = skelID,
-                        side = "Left",
+                        handID = new List<string> { $"{providerSkelID}-Left" },
                         position = worldPosLeft
                     });
                 }
@@ -165,16 +219,11 @@ namespace RoomAliveToolkit
             {
                 foreach (TrackedHand prevHand in prevHands)
                 {
-                    // match between frames on: provider, skel id, hand (L or R)
-                    bool provider = currHand.skelProvider == prevHand.skelProvider;
-                    bool id = currHand.skelID == prevHand.skelID;
-                    bool hand = currHand.side == prevHand.side;
-
-                    if (provider && id && hand)
+                    // handID matches same provider, skel id, and hand (L or R)
+                    if (currHand.handID == prevHand.handID)
                     {
                         currHand.frameMatch = true;
                         prevHand.frameMatch = true;
-
                         currHand.handObject = prevHand.handObject;
                     }
                 }
