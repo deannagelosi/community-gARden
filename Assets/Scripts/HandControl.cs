@@ -50,8 +50,10 @@ namespace RoomAliveToolkit
         // Update is called once per frame
         void Update()
         {
+            List<TrackedHand> currFrameHands = new List<TrackedHand>();
+
             // Gather all the detected hands accross all providers and skeleton ids
-            List<TrackedHand> currFrameHands = gatherAllHands(skeletonProviders);
+            gatherAllHands(skeletonProviders, currFrameHands);
 
             // Current Task: Add code to de-dupe hands list, merging hands in proximity
             mergeProximityMatches(currFrameHands);
@@ -84,29 +86,24 @@ namespace RoomAliveToolkit
             }
 
             // Save current matches for the next frame
-            prevFrameHands = new List<TrackedHand>();
+            // prevFrameHands = new List<TrackedHand>();
             prevFrameHands = currFrameHands;
         }
 
-        private List<TrackedHand> gatherAllHands(List<RATSkeletonProvider> skeletonProviders)
+        private void gatherAllHands(List<RATSkeletonProvider> skeletonProviders, List<TrackedHand> currFrameHands)
         {
-            List<TrackedHand> currFrameHands = new List<TrackedHand>();
-
             if (skeletonProviders.Count > 0)
             {
-                int providerID = 1;
+                int providerID = 0;
                 foreach (RATSkeletonProvider skelProvider in skeletonProviders)
                 {
-                    // To Do: check these outputs show unique providers
-                    print("Skel Provider:");
-                    print(skelProvider);
-
-                    for (int skelID = 1; skelID <= maxBodies; skelID++) // Loops 1 thru maxBodies
+                    for (int skelID = 0; skelID < maxBodies; skelID++) // Loops 1 thru maxBodies
                     {
                         RATKinectSkeleton skel = skelProvider.GetKinectSkeleton(skelID);
                         if (skel != null && skel.valid)
                         {
                             string providerSkelID = $"SP{providerID}-SK{skelID}";
+                            print($"found a skeleton: {providerSkelID}");
 
                             List<TrackedHand> skelHands = getHandPositions(skelProvider, providerSkelID, skel);
                             if (skelHands != null)
@@ -118,7 +115,6 @@ namespace RoomAliveToolkit
                     providerID++;
                 }
             }
-            return currFrameHands;
         }
 
         private List<TrackedHand> mergeProximityMatches(List<TrackedHand> handsList)
@@ -177,35 +173,35 @@ namespace RoomAliveToolkit
 
             if (skel != null && skel.valid)
             {
-                // check if there is confidence here, if it returns a hand
-                // To Do: validate this works and add filter code here
-                print("RHand Confidence: " + skel.handRightConfidence);
-                print("LHand Confidence: " + skel.handLeftConfidence);
-
-                Vector3 kinPosRight = skel.jointPositions3D[(int)JointType.HandRight]; // in skeleton provider coordinate system 
-                Vector3 kinPosLeft = skel.jointPositions3D[(int)JointType.HandLeft]; // in skeleton provider coordinate system
-
-                Vector3 worldPosRight = skelProvider.transform.localToWorldMatrix.MultiplyPoint(kinPosRight); // move to world coordinates
-                Vector3 worldPosLeft = skelProvider.transform.localToWorldMatrix.MultiplyPoint(kinPosLeft); // move to world coordinates
-
-                if (worldPosRight != null)
+                if (skel.handRightConfidence == 1)  // returns 0 or 1, not a range
                 {
-                    hands.Add(new TrackedHand()
-                    {
-                        handID = new List<string> { $"{providerSkelID}-Right" },
-                        position = worldPosRight
-                    });
+                    Vector3 providerPosition = skel.jointPositions3D[(int)JointType.HandRight]; // returns skeleton provider coordinate system
+                    string handID = $"{providerSkelID}-Right";
+                    addValidHand(hands, handID, providerPosition, skelProvider);
                 }
-                if (worldPosLeft != null)
+
+                if (skel.handLeftConfidence == 1)   // returns 0 or 1, not a range
                 {
-                    hands.Add(new TrackedHand()
-                    {
-                        handID = new List<string> { $"{providerSkelID}-Left" },
-                        position = worldPosLeft
-                    });
+                    Vector3 providerPosition = skel.jointPositions3D[(int)JointType.HandLeft]; // in skeleton provider coordinate system
+                    string handID = $"{providerSkelID}-Left";
+                    addValidHand(hands, handID, providerPosition, skelProvider);
                 }
             }
             return hands;
+        }
+
+        private void addValidHand(List<TrackedHand> hands, string handID, Vector3 providerPosition, RATSkeletonProvider skelProvider)
+        {
+            Vector3 worldPos = skelProvider.transform.localToWorldMatrix.MultiplyPoint(providerPosition); // move to world coordinates
+
+            if (worldPos != null)
+            {
+                hands.Add(new TrackedHand()
+                {
+                    handID = new List<string> { handID },
+                    position = worldPos
+                });
+            }
         }
 
         private void resetAndFindMatch(List<TrackedHand> currentHands, List<TrackedHand> prevHands)
@@ -220,11 +216,15 @@ namespace RoomAliveToolkit
                 foreach (TrackedHand prevHand in prevHands)
                 {
                     // handID matches same provider, skel id, and hand (L or R)
-                    if (currHand.handID == prevHand.handID)
+                    if (currHand.handID[0] == prevHand.handID[0]) // to do: switch this to compare array of hands
                     {
                         currHand.frameMatch = true;
                         prevHand.frameMatch = true;
                         currHand.handObject = prevHand.handObject;
+                    }
+                    else
+                    {
+                        print($"no match. Curr HandID: {currHand.handID[0]} Prev HandID: {prevHand.handID[0]}");
                     }
                 }
             }
@@ -237,11 +237,13 @@ namespace RoomAliveToolkit
 
             if (inactiveHands.Count > 0)
             {
+                // print("use existing hand");
                 handObject = inactiveHands[0];
                 inactiveHands.RemoveAt(0);
             }
             else
             {
+                // print("instantiate");
                 handObject = Instantiate(baseHandObj, new Vector3(0, 0, 0), Quaternion.identity);
             }
             handObject.SetActive(true);
@@ -251,6 +253,7 @@ namespace RoomAliveToolkit
         private void discardHand(GameObject obj)
         {
             // Deactivate and add to inactive list
+            // print("deactivate hand");
             obj.SetActive(false);
             inactiveHands.Add(obj);
         }

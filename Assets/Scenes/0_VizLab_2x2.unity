@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44676584, g: 0.49662894, b: 0.5749333, a: 1}
+  m_IndirectSpecularColor: {r: 0.44676608, g: 0.49662942, b: 0.57493305, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -271,7 +271,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &84718627
 Transform:
   m_ObjectHideFlags: 0
@@ -1568,8 +1568,8 @@ MonoBehaviour:
   - {fileID: 65560822}
   - {fileID: 1370499086}
   depthMeshes:
-  - {fileID: 1826923170}
   - {fileID: 326770914}
+  - {fileID: 1826923170}
   backgroundColor: {r: 0, g: 0, b: 0, a: 1}
   screenSetup: 0
   screenViewports:
@@ -2265,7 +2265,7 @@ MonoBehaviour:
   streamingMode: 1
   startOnAwake: 0
   loopPlayback: 0
-  streamFolder: Assets/ResourcesCalibrations/0_VizLab_2x2/kinectStream/PotTest/
+  streamFolder: Assets/ResourcesCalibrations/0_VizLab_2x2/kinectStream/HandTest/
   trimProCamPlayback: 0
   depthFramesTrimFromStart: 0
   depthFramesTrimFromEnd: 0
@@ -2986,7 +2986,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1121471682
 Transform:
   m_ObjectHideFlags: 0
@@ -4132,7 +4132,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1372464494
 Transform:
   m_ObjectHideFlags: 0
@@ -4160,7 +4160,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   baseHandObj: {fileID: 3203566547261332894, guid: adb2a390dad7169449132e4fcf8ac151, type: 3}
-  skeletonProviders: []
+  skeletonProviders:
+  - {fileID: 972806877}
   maxBodies: 1
 --- !u!1 &1455916862
 GameObject:
@@ -5735,7 +5736,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1978532077
 Transform:
   m_ObjectHideFlags: 0
