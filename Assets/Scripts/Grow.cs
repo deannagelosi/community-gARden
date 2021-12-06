@@ -12,6 +12,7 @@ public class Grow : MonoBehaviour
     bool blossomed = false;
     SpriteRenderer sr;
     AudioSource audioSource;
+    public ParticleSystem sparkles;
     
 
     // Start is called before the first frame update
@@ -36,12 +37,14 @@ public class Grow : MonoBehaviour
             Sprite buddedSprite = buddedSprites[Random.Range(0, buddedSprites.Length)];
             sr.sprite = buddedSprite;
             audioSource.Play();
+            sparkles.Play();
         }
         if (!blossomed && gotSunlight && gotRain) {
             // bloom flower completely
             Sprite blossomedSprite = blossomedSprites[Random.Range(0, blossomedSprites.Length)];
             sr.sprite = blossomedSprite;
             audioSource.Play();
+            sparkles.Play();
         }
         budded = gotSunlight || gotRain;
         blossomed = gotSunlight && gotRain;
