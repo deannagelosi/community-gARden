@@ -1,4 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 // using Assets.Scripts;
 using TMPro;
 using UnityEngine;
@@ -8,8 +10,12 @@ public class FindColor : MonoBehaviour
     [SerializeField]
     bool hasCalculated;
 
-    [SerializeField]
-    MeshRenderer resultRenderer;
+    //[SerializeField]
+    //MeshRenderer resultRenderer;
+    public Transform userPlant;
+    public Transform ground;
+    private bool potDetected;
+    HashSet<float> availablePositions = new HashSet<float>();
 
     [SerializeField]
     float colorGate = 0.1f;
@@ -34,12 +40,20 @@ public class FindColor : MonoBehaviour
     private WaitForSeconds shortPause = new WaitForSeconds(0.2f);
     private WaitForSeconds mediumPause = new WaitForSeconds(0.5f);
 
+    private System.Random random  = new System.Random();
+
 
     // Start is called before the first frame update
     void Start()
     {
         this.colourCamera = GetComponent<Camera>();
         this.renderTexture = this.colourCamera.targetTexture;
+        // populate available positions for flowers
+        float pos = -7f;
+        while (pos < 7f) {
+            availablePositions.Add(pos);
+            pos += 1.5f;
+        }
         // this.hueLightHelper = new HueLightHelper(hueSettings);
         // if (useHueLight)
         // {
@@ -56,11 +70,55 @@ public class FindColor : MonoBehaviour
             StartCoroutine(FindAverageColor());
 
         }
-
-        if (this.resultRenderer != null)
-        {
-            this.resultRenderer.material.color = this.averageColor;
+        //Debug.Log("Current color: " + this.averageColor);
+        bool isCurrPot = IsPot(this.averageColor);
+        bool isCurrBackground = IsBackground(this.averageColor);
+        if (!potDetected && isCurrPot) {
+            // Instantiate plant in random position
+            // Choose at 1.5 intervals
+            List<float> availableList = availablePositions.ToList();
+            float xPos = availableList[random.Next(availableList.Count)];
+            availablePositions.Remove(xPos);
+            float yPos = Random.Range(-0.3f, 1f);
+            Vector3 pos = new Vector3(xPos, yPos, 0.65f);
+            Debug.Log("Instantiate at position: " + pos);
+            Transform newPlant = Instantiate(userPlant, ground);
+            newPlant.localPosition = pos;
+            potDetected = true;
+        } else if (potDetected && isCurrBackground) {
+            potDetected = false;
         }
+
+        //if (this.resultRenderer != null)
+        //{
+        //    this.resultRenderer.material.color = this.averageColor;
+        //}
+    }
+
+    private bool IsPot(Color color) {
+        float red = 0.486f;
+        float green = 0.365f;
+        float blue = 0.239f;
+        float rDiff = Mathf.Abs(color.r-red);
+        float bDiff = Mathf.Abs(color.b-blue);
+        float gDiff = Mathf.Abs(color.g-green);
+        if (rDiff <= 0.05 && bDiff <= 0.05 && gDiff <= 0.05) {
+            return true;
+        }
+        return false;
+    }
+
+    private bool IsBackground(Color color) {
+        float red = 0.144f;
+        float green = 0.180f;
+        float blue = 0.184f;
+        float rDiff = Mathf.Abs(color.r-red);
+        float bDiff = Mathf.Abs(color.b-blue);
+        float gDiff = Mathf.Abs(color.g-green);
+        if (rDiff <= 0.05 && bDiff <= 0.05 && gDiff <= 0.05) {
+            return true;
+        }
+        return false;
     }
 
 
