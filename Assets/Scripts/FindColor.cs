@@ -14,6 +14,7 @@ public class FindColor : MonoBehaviour
     //MeshRenderer resultRenderer;
     public Transform userPlant;
     public Transform ground;
+    public bool debugColor = false; // True console logs the detected average color
     private bool potDetected;
     HashSet<float> availablePositions = new HashSet<float>();
 
@@ -71,7 +72,11 @@ public class FindColor : MonoBehaviour
             StartCoroutine(FindAverageColor());
 
         }
-        Debug.Log("Current color: " + this.averageColor);
+
+        if (debugColor == true)
+        {
+            Debug.Log("Current color: " + this.averageColor);
+        }
         bool isCurrPot = IsPot(this.averageColor);
         bool isCurrBackground = IsBackground(this.averageColor);
         if (!potDetected && isCurrPot)
@@ -182,7 +187,10 @@ public class FindColor : MonoBehaviour
             }
             else
             {
-                print("No average colour");
+                if (debugColor == true)
+                {
+                    print("No average colour");
+                }
                 this.hasCalculated = false;
                 yield return this.mediumPause;
             }
