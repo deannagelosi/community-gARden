@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 3203566547261332867}
   - component: {fileID: 3203566547261332865}
   - component: {fileID: 3203566547261332864}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: UserHand
   m_TagString: UserHand
   m_Icon: {fileID: 0}
