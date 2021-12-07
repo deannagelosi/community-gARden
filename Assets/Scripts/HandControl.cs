@@ -27,11 +27,12 @@ namespace RoomAliveToolkit
         public List<RATSkeletonProvider> skeletonProviders;
         public int maxBodies = 1; // Track 1 skeleton by default (Kinect can track up to 6)
         public bool skipConfidenceCheck = true; // skip checking if hand confidence is 1 (high)
+        public float proximityDistance = 0.15f; // Default to hand object colision mesh diameter
 
         // Collect inactive hands for re-use (instead of instantiating more and more)
         private List<GameObject> inactiveHands = new List<GameObject>();
+        private List<TrackedHand> currFrameHands = new List<TrackedHand>();
         private List<TrackedHand> prevFrameHands = new List<TrackedHand>();
-        private float objDiameter;
 
         // Start is called before the first frame update
         void Start()
@@ -52,17 +53,14 @@ namespace RoomAliveToolkit
         // Update is called once per frame
         void Update()
         {
-            List<TrackedHand> currFrameHands = new List<TrackedHand>();
-
             // Gather all the detected hands accross all providers and skeleton ids
-            gatherAllHands(skeletonProviders, currFrameHands);
+            currFrameHands = gatherAllHands(skeletonProviders);
 
-            // Current Task: Add code to de-dupe hands list, merging hands in proximity
-            // mergeProximityMatches(currFrameHands);
+            // Merging hands in proximity, de-duplicating hand objects in the location space
+            currFrameHands = mergeProximityMatches(currFrameHands);
 
             // Clear old match data and check for new matches
             resetAndFindMatch(currFrameHands, prevFrameHands);
-            // To Do: ^ make sure passed in vars modifications are being seen after
 
             // Manage CURRENT hand game objects
             foreach (TrackedHand currHand in currFrameHands)
@@ -72,7 +70,7 @@ namespace RoomAliveToolkit
                     // Not New. Retrieved this hand from the previous frame list
                     currHand.handObject.transform.position = currHand.position;
                 }
-                else if (!currHand.frameMatch)
+                else if (!currHand.frameMatch) // || currHand.handObject == null (and move this up one check ^)
                 {
                     // New. This hand was not seen in the previous frame
                     currHand.handObject = getHandObject();
@@ -92,8 +90,11 @@ namespace RoomAliveToolkit
             prevFrameHands = currFrameHands;
         }
 
-        private void gatherAllHands(List<RATSkeletonProvider> skeletonProviders, List<TrackedHand> currFrameHands)
+        private List<TrackedHand> gatherAllHands(List<RATSkeletonProvider> skeletonProviders)
         {
+
+            List<TrackedHand> foundHands = new List<TrackedHand>();
+
             if (skeletonProviders.Count > 0)
             {
                 int providerID = 0;
@@ -105,82 +106,70 @@ namespace RoomAliveToolkit
                         if (skel != null && skel.valid)
                         {
                             string providerSkelID = $"SP{providerID}-SK{skelID}";
-                            // print($"found a skeleton: {providerSkelID}");
 
                             List<TrackedHand> skelHands = getHandPositions(skelProvider, providerSkelID, skel);
                             if (skelHands != null)
                             {
-                                currFrameHands.AddRange(skelHands);
+                                foundHands.AddRange(skelHands);
                             }
                         }
                     }
                     providerID++;
                 }
             }
+
+            return foundHands;
         }
 
-        private void mergeProximityMatches(List<TrackedHand> handsList)
+        private List<TrackedHand> mergeProximityMatches(List<TrackedHand> handsList)
         {
-            // Loop each hand and gather any hands that are in proximity (includes itself)
             List<TrackedHand> mergedHands = new List<TrackedHand>();
-
-            if (handsList.Count > 1)
-            {
-                print(handsList.Count);
-                print($"{handsList.Count} Distance: {Vector3.Distance(handsList[0].position, handsList[1].position)}");
-
-                // to do: here in the code: distance works, but not de-dupping. check distint code?
-            }
 
             foreach (TrackedHand hand in handsList)
             {
-                // Get position of current hand in loop
-                Vector3 handPos = hand.position;
                 // Find all other hands in proximity (including itself)
-                List<TrackedHand> handsNear = handsList.FindAll(h => Vector3.Distance(handPos, h.position) <= objDiameter);
+                List<TrackedHand> handsNear = handsList.FindAll(h => Vector3.Distance(hand.position, h.position) <= proximityDistance);
 
-                // Merge all the found hands together into 1 hand object
-                // 1a. Get the first hand object
-                GameObject oneHandObject = handsNear[0].handObject;
-                // 1b. Deactivate the rest if more than one
                 if (handsNear.Count > 1)
                 {
-                    for (int i = 1; i < handsNear.Count; i++)
+                    // Disable old hand objects, going to use a new one
+                    handsNear.ForEach(h => discardHand(h));
+
+                    // Combine sorted handIDs of all matched hands
+                    List<string> allHandIDs = handsNear.Select(h => h.handID).ToList();
+                    allHandIDs.Sort();
+                    string sortedHandIDs = String.Join("+", allHandIDs.ToArray());
+
+                    // Check if a new find (ie. merging hands A and B, but already merged B and A)
+                    bool alreadyFound = mergedHands.Any(h => h.handID == sortedHandIDs);
+
+                    if (!alreadyFound)
                     {
-                        if (handsNear[i].handObject != null)
+                        // Create a new merged hand
+                        // - Average all of the positions
+                        Vector3 sumPos = Vector3.zero;
+                        handsNear.ForEach(h => sumPos += h.position);
+                        Vector3 averagePos = new Vector3(sumPos.x / handsNear.Count, sumPos.y / handsNear.Count, sumPos.z / handsNear.Count);
+
+                        // - Construct and save merged hand
+                        TrackedHand mergedHand = new TrackedHand()
                         {
-                            discardHand(handsNear[i]);
-                        }
+                            handID = sortedHandIDs,
+                            position = averagePos,
+                            handObject = null, // Update() assigns new hands a GameObject
+                            frameMatch = false
+                        };
+                        mergedHands.Add(mergedHand);
                     }
                 }
-
-                // 2. Get al ist of all handIDs, sort, and join into a new ID string
-                List<string> allHandIDs = handsNear.Select(h => h.handID).ToList();
-                allHandIDs.Sort();
-                string joinedHandIDs = String.Join("+", allHandIDs.ToArray());
-
-                // 3. Average all the positions
-                Vector3 sumPos = Vector3.zero;
-                foreach (TrackedHand nearHand in handsNear)
+                else if (handsNear.Count == 1)
                 {
-                    sumPos += nearHand.position.normalized;
+                    // Only found 1 hand in proximity (itself). Save and return it
+                    mergedHands.Add(handsNear[0]);
                 }
-                sumPos = sumPos.normalized;
-                Vector3 averagePos = new Vector3(sumPos.x / handsNear.Count, sumPos.y / handsNear.Count, sumPos.z / handsNear.Count);
-                // to do: test this is averaging ^
-
-                TrackedHand mergedHand = new TrackedHand()
-                {
-                    handID = joinedHandIDs,
-                    position = averagePos,
-                    handObject = oneHandObject,
-                    frameMatch = false
-                };
-                mergedHands.Add(mergedHand);
             }
 
-            // to do: test this is de-duping 
-            handsList = mergedHands.Distinct().ToList();
+            return mergedHands; // Replace old hand list with new one
         }
 
         private List<TrackedHand> getHandPositions(RATSkeletonProvider skelProvider, string providerSkelID, RATKinectSkeleton skel)
@@ -189,7 +178,7 @@ namespace RoomAliveToolkit
             // Get any detected Hands
             if (skel != null && skel.valid)
             {
-                // To Do: Can this instead loop {"Right", "Left"} and call the right/left methods?
+                // Note: Code duplication. Could this instead loop {"Right", "Left"} and call right/left methods?
                 if (skipConfidenceCheck || skel.handRightConfidence == 1) // Get Right
                 {
                     Vector3 providerPos = skel.jointPositions3D[(int)JointType.HandRight];
@@ -273,8 +262,11 @@ namespace RoomAliveToolkit
         private void discardHand(TrackedHand hand)
         {
             // Deactivate and add to inactive list
-            hand.handObject.SetActive(false);
-            inactiveHands.Add(hand.handObject);
+            if (hand.handObject != null)
+            {
+                hand.handObject.SetActive(false);
+                inactiveHands.Add(hand.handObject);
+            }
         }
 
     }

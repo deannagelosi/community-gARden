@@ -1371,6 +1371,7 @@ MonoBehaviour:
   hasCalculated: 0
   userPlant: {fileID: 7702373446476419553, guid: cad30d2afb8d88343afa61dd80af6d1d, type: 3}
   ground: {fileID: 1609316079}
+  debugColor: 0
   colorGate: 0.1
   averageColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!21 &607272526
@@ -3975,6 +3976,7 @@ MonoBehaviour:
   - {fileID: 2050143469}
   maxBodies: 1
   skipConfidenceCheck: 1
+  proximityDistance: 0.15
 --- !u!1 &1455916862
 GameObject:
   m_ObjectHideFlags: 0
