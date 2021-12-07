@@ -1,7 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using System.Linq;
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace RoomAliveToolkit
 {
@@ -11,7 +12,17 @@ namespace RoomAliveToolkit
     {
         // public RATSkeletonProvider skelProvider { get; set; }
         // public int skelID { get; set; }
-        public List<string> handIDs { get; set; }
+        public string handID { get; set; }
+        public Vector3 position { get; set; }
+        public bool frameMatch;
+        public GameObject handObject;
+    }
+    // Class object for collecting all the tracked hand data
+    public class HandSidesInfo
+    {
+        // public RATSkeletonProvider skelProvider { get; set; }
+        // public int skelID { get; set; }
+        public string handID { get; set; }
         public Vector3 position { get; set; }
         public bool frameMatch;
         public GameObject handObject;
@@ -29,6 +40,7 @@ namespace RoomAliveToolkit
         // Collect inactive hands for re-use (instead of instantiating more and more)
         private List<GameObject> inactiveHands = new List<GameObject>();
         private List<TrackedHand> prevFrameHands = new List<TrackedHand>();
+        private List<HandSidesInfo> sidesInfo = new List<HandSidesInfo>();
         private float objDiameter;
 
         // Start is called before the first frame update
@@ -82,7 +94,7 @@ namespace RoomAliveToolkit
             foreach (TrackedHand prevHand in prevFrameHands)
             {
                 // Previous hand was not found in the current frame
-                if (!prevHand.frameMatch) { discardHand(prevHand.handObject); }
+                if (!prevHand.frameMatch) { discardHand(prevHand); }
             }
 
             // Save current matches for the next frame
@@ -147,14 +159,15 @@ namespace RoomAliveToolkit
                     {
                         if (handsNear[i].handObject != null)
                         {
-                            discardHand(handsNear[i].handObject);
+                            discardHand(handsNear[i]);
                         }
                     }
                 }
 
-                // 2. List of all the handIDs
-                List<string> allHandIDs = handsNear.Select(h => h.handIDs[0]).ToList();
+                // 2. Get al ist of all handIDs, sort, and join into a new ID string
+                List<string> allHandIDs = handsNear.Select(h => h.handID).ToList();
                 allHandIDs.Sort();
+                string joinedHandIDs = String.Join("+", allHandIDs.ToArray());
 
                 // 3. Average all the positions
                 Vector3 sumPos = Vector3.zero;
@@ -168,7 +181,7 @@ namespace RoomAliveToolkit
 
                 TrackedHand mergedHand = new TrackedHand()
                 {
-                    handIDs = allHandIDs,
+                    handID = joinedHandIDs,
                     position = averagePos,
                     handObject = oneHandObject,
                     frameMatch = false
@@ -183,6 +196,9 @@ namespace RoomAliveToolkit
         private List<TrackedHand> getHandPositions(RATSkeletonProvider skelProvider, string providerSkelID, RATKinectSkeleton skel)
         {
             List<TrackedHand> hands = new List<TrackedHand>();
+
+            // to do: use the hand side info class to loop these (plus the addvalidhands function) with strings for method names
+            // string s = string InvokeStringMethod("TheClass", "TheMethod");
 
             if (skel != null && skel.valid)
             {
@@ -211,7 +227,7 @@ namespace RoomAliveToolkit
             {
                 hands.Add(new TrackedHand()
                 {
-                    handIDs = new List<string> { handID },
+                    handID = handID,
                     position = worldPos
                 });
             }
@@ -228,12 +244,9 @@ namespace RoomAliveToolkit
             {
                 foreach (TrackedHand prevHand in prevHands)
                 {
-                    // handID matches same provider, skel id, and hand (L or R)
-                    currHand.handIDs.Sort();
-                    prevHand.handIDs.Sort();
-
-                    // if (currHand.handIDs[0] == prevHand.handIDs[0])
-                    if (Enumerable.SequenceEqual(currHand.handIDs, prevHand.handIDs))
+                    // handID matches same provider, skel id, and hand (L or R) + pairs
+                    if (currHand.handID == prevHand.handID)
+                    // if (Enumerable.SequenceEqual(currHand.handIDs, prevHand.handIDs))
                     {
                         currHand.frameMatch = true;
                         prevHand.frameMatch = true;
@@ -241,7 +254,7 @@ namespace RoomAliveToolkit
                     }
                     else
                     {
-                        // print($"no match. Curr HandID: {currHand.handIDs[0]} Prev HandID: {prevHand.handIDs[0]}");
+                        // print($"no match. Curr HandID: {currHand.handID} Prev HandID: {prevHand.handID}");
                     }
                 }
             }
@@ -267,12 +280,11 @@ namespace RoomAliveToolkit
             return handObject;
         }
 
-        private void discardHand(GameObject obj)
+        private void discardHand(TrackedHand hand)
         {
             // Deactivate and add to inactive list
-            // print("deactivate hand");
-            obj.SetActive(false);
-            inactiveHands.Add(obj);
+            hand.handObject.SetActive(false);
+            inactiveHands.Add(hand.handObject);
         }
 
     }
