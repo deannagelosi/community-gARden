@@ -73,7 +73,7 @@ namespace RoomAliveToolkit
                 else if (!currHand.frameMatch) // || currHand.handObject == null (and move this up one check ^)
                 {
                     // New. This hand was not seen in the previous frame
-                    currHand.handObject = getHandObject();
+                    currHand.handObject = getHandObject(currHand.handID);
                     currHand.handObject.transform.position = currHand.position;
                 }
             }
@@ -239,7 +239,7 @@ namespace RoomAliveToolkit
             }
         }
 
-        private GameObject getHandObject()
+        private GameObject getHandObject(string handID)
         {
             // Recycle old inactive hand if available, or make a new one
             GameObject handObject;
@@ -257,6 +257,9 @@ namespace RoomAliveToolkit
                 handObject.transform.parent = gameObject.transform.parent.transform;
             }
             handObject.SetActive(true);
+            handObject.GetComponent<HandState>().handID = null;
+            handObject.GetComponent<HandState>().handID = handID;
+
             return handObject;
         }
 
@@ -266,6 +269,7 @@ namespace RoomAliveToolkit
             if (hand.handObject != null)
             {
                 hand.handObject.SetActive(false);
+                hand.handObject.GetComponent<HandState>().handID = null;
                 inactiveHands.Add(hand.handObject);
             }
         }
