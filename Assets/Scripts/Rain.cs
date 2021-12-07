@@ -13,16 +13,13 @@ public class Rain : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Rain.raining) {
-            rain.SetActive(true);
-        } else {
-            rain.SetActive(false);
+        if (!Rain.raining) {
             // ground is dry again 5 seconds after rain stops falling
             if (Time.time - Rain.rainStopTime >= 5) {
                 Rain.groundWet = false;
             }
         }
-        if (groundWet) {
+        if (Rain.groundWet) {
             ground.GetComponent<SpriteRenderer>().color = new Color32(120, 120, 120, 255);
         } else {
             ground.GetComponent<SpriteRenderer>().color = new Color32(191, 191, 191, 255);
@@ -35,9 +32,11 @@ public class Rain : MonoBehaviour
         Debug.Log("Raining " + Rain.raining);
         if (Rain.raining) {
             Rain.raining = false;
+            rain.SetActive(false);
             Rain.rainStopTime = Time.time;
         } else {
             Rain.raining = true;
+            rain.SetActive(true);
             Rain.groundWet = true;
         }
     }
