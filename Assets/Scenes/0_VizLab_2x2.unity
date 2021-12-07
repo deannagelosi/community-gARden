@@ -2274,7 +2274,7 @@ MonoBehaviour:
   clients:
   - {fileID: 972806877}
   - {fileID: 2050143469}
-  streamingMode: 0
+  streamingMode: 1
   startOnAwake: 0
   loopPlayback: 0
   streamFolder: Assets/KinectRecordings/VizLab0/RainTest/
