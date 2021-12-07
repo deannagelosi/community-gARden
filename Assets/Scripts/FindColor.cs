@@ -40,7 +40,7 @@ public class FindColor : MonoBehaviour
     private WaitForSeconds shortPause = new WaitForSeconds(0.2f);
     private WaitForSeconds mediumPause = new WaitForSeconds(0.5f);
 
-    private System.Random random  = new System.Random();
+    private System.Random random = new System.Random();
 
 
     // Start is called before the first frame update
@@ -50,7 +50,8 @@ public class FindColor : MonoBehaviour
         this.renderTexture = this.colourCamera.targetTexture;
         // populate available positions for flowers
         float pos = -7f;
-        while (pos < 7f) {
+        while (pos < 7f)
+        {
             availablePositions.Add(pos);
             pos += 1.5f;
         }
@@ -70,10 +71,11 @@ public class FindColor : MonoBehaviour
             StartCoroutine(FindAverageColor());
 
         }
-        //Debug.Log("Current color: " + this.averageColor);
+        Debug.Log("Current color: " + this.averageColor);
         bool isCurrPot = IsPot(this.averageColor);
         bool isCurrBackground = IsBackground(this.averageColor);
-        if (!potDetected && isCurrPot) {
+        if (!potDetected && isCurrPot)
+        {
             // Instantiate plant in random position
             // Choose at 1.5 intervals
             List<float> availableList = availablePositions.ToList();
@@ -85,7 +87,9 @@ public class FindColor : MonoBehaviour
             Transform newPlant = Instantiate(userPlant, ground);
             newPlant.localPosition = pos;
             potDetected = true;
-        } else if (potDetected && isCurrBackground) {
+        }
+        else if (potDetected && isCurrBackground)
+        {
             potDetected = false;
         }
 
@@ -95,27 +99,38 @@ public class FindColor : MonoBehaviour
         //}
     }
 
-    private bool IsPot(Color color) {
-        float red = 0.486f;
-        float green = 0.365f;
-        float blue = 0.239f;
-        float rDiff = Mathf.Abs(color.r-red);
-        float bDiff = Mathf.Abs(color.b-blue);
-        float gDiff = Mathf.Abs(color.g-green);
-        if (rDiff <= 0.05 && bDiff <= 0.05 && gDiff <= 0.05) {
-            return true;
+    private bool IsPot(Color color)
+    {
+        // Samples of pots
+        Color[] pots = new Color[] {
+            new Color(0.778f, 0.572f, 0.328f),
+            new Color(0.833f, 0.542f, 0.275f)
+        };
+        // Check if our current color is close to any of the pots
+        for (int i = 0; i < pots.Length; i++)
+        {
+            Color pot = pots[i];
+            float rDiff = Mathf.Abs(color.r - pot.r);
+            float bDiff = Mathf.Abs(color.b - pot.b);
+            float gDiff = Mathf.Abs(color.g - pot.g);
+            if (rDiff <= 0.1 && bDiff <= 0.1 && gDiff <= 0.1)
+            {
+                return true;
+            }
         }
         return false;
     }
 
-    private bool IsBackground(Color color) {
-        float red = 0.144f;
-        float green = 0.180f;
-        float blue = 0.184f;
-        float rDiff = Mathf.Abs(color.r-red);
-        float bDiff = Mathf.Abs(color.b-blue);
-        float gDiff = Mathf.Abs(color.g-green);
-        if (rDiff <= 0.05 && bDiff <= 0.05 && gDiff <= 0.05) {
+    private bool IsBackground(Color color)
+    {
+        float red = 0.211f;
+        float green = 0.224f;
+        float blue = 0.231f;
+        float rDiff = Mathf.Abs(color.r - red);
+        float bDiff = Mathf.Abs(color.b - blue);
+        float gDiff = Mathf.Abs(color.g - green);
+        if (rDiff <= 0.05 && bDiff <= 0.05 && gDiff <= 0.05)
+        {
             return true;
         }
         return false;
@@ -176,11 +191,11 @@ public class FindColor : MonoBehaviour
         return averageColor.r + averageColor.g + averageColor.b > 0;
     }
 
-    private Color AverageWeightedColor(Color[] colors) 
+    private Color AverageWeightedColor(Color[] colors)
     {
         var total = 0;
         var r = 0f; var g = 0f; var b = 0f;
-        for (var i = 0; i< colors.Length; i++) 
+        for (var i = 0; i < colors.Length; i++)
         {
             if (colors[i].r + colors[i].g + colors[i].b > colorGate)
             {
@@ -190,7 +205,7 @@ public class FindColor : MonoBehaviour
                 total++;
             }
         }
-        return new Color(r/total, g/total, b/total, 1);
+        return new Color(r / total, g / total, b / total, 1);
     }
 
 }
