@@ -82,7 +82,7 @@ public class FindColor : MonoBehaviour
             float xPos = availableList[random.Next(availableList.Count)];
             availablePositions.Remove(xPos);
             float yPos = Random.Range(-0.3f, 1f);
-            Vector3 pos = new Vector3(xPos, yPos, 0.65f);
+            Vector3 pos = new Vector3(xPos, yPos, 0f);
             Debug.Log("Instantiate at position: " + pos);
             Transform newPlant = Instantiate(userPlant, ground);
             newPlant.localPosition = pos;
@@ -104,7 +104,10 @@ public class FindColor : MonoBehaviour
         // Samples of pots
         Color[] pots = new Color[] {
             new Color(0.778f, 0.572f, 0.328f),
-            new Color(0.833f, 0.542f, 0.275f)
+            new Color(0.833f, 0.542f, 0.275f),
+            new Color(0.752f, 0.558f, 0.344f),
+            new Color(0.447f, 0.309f, 0.202f),
+            new Color(0.533f, 0.335f, 0.204f)
         };
         // Check if our current color is close to any of the pots
         for (int i = 0; i < pots.Length; i++)

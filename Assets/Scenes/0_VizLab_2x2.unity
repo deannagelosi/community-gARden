@@ -1299,7 +1299,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 592454018}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1.452, y: -0.926, z: -0.848}
+  m_LocalPosition: {x: 1.394, y: -0.926, z: -0.848}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1509986581}
@@ -1532,6 +1532,7 @@ Transform:
   - {fileID: 904554290}
   - {fileID: 1370499088}
   - {fileID: 65560824}
+  - {fileID: 1645334487}
   - {fileID: 728285164}
   m_Father: {fileID: 0}
   m_RootOrder: 1
@@ -1808,7 +1809,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 15a10a3c3690bab468880eb8cb36fe4e, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 15a10a3c3690bab468880eb8cb36fe4e, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2274,7 +2275,7 @@ MonoBehaviour:
   clients:
   - {fileID: 972806877}
   - {fileID: 2050143469}
-  streamingMode: 1
+  streamingMode: 0
   startOnAwake: 0
   loopPlayback: 0
   streamFolder: Assets/KinectRecordings/VizLab0/RainTest/
@@ -4664,6 +4665,89 @@ Transform:
   m_Father: {fileID: 155527203}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1645334486
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1645334487}
+  - component: {fileID: 1645334489}
+  - component: {fileID: 1645334488}
+  m_Layer: 0
+  m_Name: ProxyLeftCamera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!4 &1645334487
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1645334486}
+  m_LocalRotation: {x: 0.15872997, y: 0.10507752, z: -0.049905915, w: 0.9804453}
+  m_LocalPosition: {x: -0.59985644, y: 0.8698938, z: -0.73007536}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 651606599}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 18.768, y: 11.589, z: -3.906}
+--- !u!81 &1645334488
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1645334486}
+  m_Enabled: 1
+--- !u!20 &1645334489
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1645334486}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_FocalLength: 50
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 1
+  m_AllowMSAA: 1
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
 --- !u!1 &1652907445
 GameObject:
   m_ObjectHideFlags: 0
@@ -5105,7 +5189,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1767353330}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.44, y: -0.892, z: -0.115069866}
+  m_LocalPosition: {x: 1.394, y: -0.892, z: -0.115069866}
   m_LocalScale: {x: 0.2, y: 0.2, z: 0.01}
   m_Children: []
   m_Father: {fileID: 1509986581}
