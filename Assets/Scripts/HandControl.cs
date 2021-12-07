@@ -13,16 +13,7 @@ namespace RoomAliveToolkit
         // public RATSkeletonProvider skelProvider { get; set; }
         // public int skelID { get; set; }
         public string handID { get; set; }
-        public Vector3 position { get; set; }
-        public bool frameMatch;
-        public GameObject handObject;
-    }
-    // Class object for collecting all the tracked hand data
-    public class HandSidesInfo
-    {
-        // public RATSkeletonProvider skelProvider { get; set; }
-        // public int skelID { get; set; }
-        public string handID { get; set; }
+        public Vector3 providerPosition { get; set; }
         public Vector3 position { get; set; }
         public bool frameMatch;
         public GameObject handObject;
@@ -40,7 +31,6 @@ namespace RoomAliveToolkit
         // Collect inactive hands for re-use (instead of instantiating more and more)
         private List<GameObject> inactiveHands = new List<GameObject>();
         private List<TrackedHand> prevFrameHands = new List<TrackedHand>();
-        private List<HandSidesInfo> sidesInfo = new List<HandSidesInfo>();
         private float objDiameter;
 
         // Start is called before the first frame update
@@ -196,41 +186,41 @@ namespace RoomAliveToolkit
         private List<TrackedHand> getHandPositions(RATSkeletonProvider skelProvider, string providerSkelID, RATKinectSkeleton skel)
         {
             List<TrackedHand> hands = new List<TrackedHand>();
-
-            // to do: use the hand side info class to loop these (plus the addvalidhands function) with strings for method names
-            // string s = string InvokeStringMethod("TheClass", "TheMethod");
-
+            // Get any detected Hands
             if (skel != null && skel.valid)
             {
-                if (skel.handRightConfidence == 1 || skipConfidenceCheck)  // returns 0 or 1, not a range
+                // To Do: Can this instead loop {"Right", "Left"} and call the right/left methods?
+                if (skipConfidenceCheck || skel.handRightConfidence == 1) // Get Right
                 {
-                    Vector3 providerPosition = skel.jointPositions3D[(int)JointType.HandRight]; // returns skeleton provider coordinate system
-                    string handID = $"{providerSkelID}-Right";
-                    addValidHand(hands, handID, providerPosition, skelProvider);
+                    Vector3 providerPos = skel.jointPositions3D[(int)JointType.HandRight];
+                    Vector3 worldPos = skelProvider.transform.localToWorldMatrix.MultiplyPoint(providerPos); // convert to world coordinates
+
+                    if (worldPos != null)
+                    {
+                        hands.Add(new TrackedHand()
+                        {
+                            handID = $"{providerSkelID}-Right",
+                            position = worldPos
+                        });
+                    }
                 }
 
-                if (skel.handLeftConfidence == 1 || skipConfidenceCheck)   // returns 0 or 1, not a range
+                if (skipConfidenceCheck || skel.handLeftConfidence == 1) // Get Left
                 {
-                    Vector3 providerPosition = skel.jointPositions3D[(int)JointType.HandLeft]; // in skeleton provider coordinate system
-                    string handID = $"{providerSkelID}-Left";
-                    addValidHand(hands, handID, providerPosition, skelProvider);
+                    Vector3 providerPos = skel.jointPositions3D[(int)JointType.HandLeft];
+                    Vector3 worldPos = skelProvider.transform.localToWorldMatrix.MultiplyPoint(providerPos); // convert to world coordinates
+
+                    if (worldPos != null)
+                    {
+                        hands.Add(new TrackedHand()
+                        {
+                            handID = $"{providerSkelID}-Left",
+                            position = worldPos
+                        });
+                    }
                 }
             }
             return hands;
-        }
-
-        private void addValidHand(List<TrackedHand> hands, string handID, Vector3 providerPosition, RATSkeletonProvider skelProvider)
-        {
-            Vector3 worldPos = skelProvider.transform.localToWorldMatrix.MultiplyPoint(providerPosition); // move to world coordinates
-
-            if (worldPos != null)
-            {
-                hands.Add(new TrackedHand()
-                {
-                    handID = handID,
-                    position = worldPos
-                });
-            }
         }
 
         private void resetAndFindMatch(List<TrackedHand> currentHands, List<TrackedHand> prevHands)
