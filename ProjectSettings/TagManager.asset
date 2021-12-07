@@ -20,8 +20,8 @@ TagManager:
   - VirtualTextures
   - StaticSurfaces
   - DynamicSurfaces
-  - 
-  - 
+  - VT_StaticLeft
+  - VT_StaticRight
   - 
   - 
   - 
