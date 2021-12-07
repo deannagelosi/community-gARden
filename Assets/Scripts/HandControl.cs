@@ -254,6 +254,7 @@ namespace RoomAliveToolkit
             {
                 // print("instantiate");
                 handObject = Instantiate(baseHandObj, new Vector3(0, 0, 0), Quaternion.identity);
+                handObject.transform.parent = gameObject.transform.parent.transform;
             }
             handObject.SetActive(true);
             return handObject;
