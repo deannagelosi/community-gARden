@@ -3949,7 +3949,7 @@ MonoBehaviour:
   - {fileID: 2050143469}
   maxBodies: 1
   skipConfidenceCheck: 1
-  proximityDistance: 0.15
+  proximityDistance: 0.2
 --- !u!1 &1455916862
 GameObject:
   m_ObjectHideFlags: 0
