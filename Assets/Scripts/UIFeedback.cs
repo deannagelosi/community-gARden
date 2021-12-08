@@ -33,10 +33,10 @@ public class UIFeedback : MonoBehaviour
                 uiWallOBj.transform.position = wallPos;
 
                 // Change color based on distance to wall
-                Color colorStart = Color.red;
-                Color colorAlpha = Color.white;
-                float distWall = Vector3.Distance(uiWallOBj.transform.position, hand.transform.position);
-                uiWallOBj.GetComponent<Renderer>().material.color = Color.Lerp(colorStart, colorAlpha, distWall / maxCameraDistance);
+                //Color colorStart = Color.red;
+                //Color colorAlpha = Color.white;
+                //float distWall = Vector3.Distance(uiWallOBj.transform.position, hand.transform.position);
+                //uiWallOBj.GetComponent<Renderer>().material.color = Color.Lerp(colorStart, colorAlpha, distWall / maxCameraDistance);
             }
         }
 
