@@ -110,7 +110,7 @@ public class FreeParallax : MonoBehaviour
         Vector3 pos = new Vector3(x, y, obj.transform.position.z);
         obj.transform.position = pos;
 
-        float xOffset = r.bounds.min.x - obj.transform.position.x;
+        /*float xOffset = r.bounds.min.x - obj.transform.position.x;
         if (xOffset != 0)
         {
             pos.x -= xOffset;
@@ -121,7 +121,7 @@ public class FreeParallax : MonoBehaviour
         {
             pos.y -= yOffset;
             obj.transform.position = pos;
-        }
+        }*/
     }
 
     // Use this for initialization
@@ -335,6 +335,7 @@ public class FreeParallaxElement
         for (int i = 0; i < GameObjects.Count; i++)
         {
             GameObject obj = GameObjects[i];
+            float y = obj.transform.position.y;
             Renderer r = GameObjectRenderers[i];
             if (RepositionLogic.SortingOrder != 0)
             {
@@ -344,16 +345,16 @@ public class FreeParallaxElement
             if (RepositionLogic.PositionMode == FreeParallaxPositionMode.IndividualStartOffScreen ||
                 RepositionLogic.PositionMode == FreeParallaxPositionMode.IndividualStartOnScreen)
             {
-                float x, y;
+                float x;//, y;
                 if (p.IsHorizontal)
                 {
                     x = (RepositionLogic.PositionMode == FreeParallaxPositionMode.IndividualStartOnScreen ? r.bounds.min.x : 0);
-                    y = (RepositionLogic.PositionMode == FreeParallaxPositionMode.IndividualStartOnScreen ? r.bounds.min.y : start + r.bounds.size.y);
+                    //y = (RepositionLogic.PositionMode == FreeParallaxPositionMode.IndividualStartOnScreen ? r.bounds.min.y : start + r.bounds.size.y);
                 }
                 else
                 {
                     x = (RepositionLogic.PositionMode == FreeParallaxPositionMode.IndividualStartOnScreen ? r.bounds.min.x : start + r.bounds.size.x);
-                    y = (RepositionLogic.PositionMode == FreeParallaxPositionMode.IndividualStartOnScreen ? r.bounds.min.y : 0);
+                    //y = (RepositionLogic.PositionMode == FreeParallaxPositionMode.IndividualStartOnScreen ? r.bounds.min.y : 0);
                 }
                 FreeParallax.SetPosition(obj, r, x, y);
             }
@@ -469,6 +470,7 @@ public class FreeParallaxElement
         {
             GameObject obj = GameObjects[i];
             Renderer r = GameObjectRenderers[i];
+            float y = obj.transform.position.y;
             Bounds b = r.bounds;
             Vector3 screenEdge = (t > 0 ? c.WorldToViewportPoint(b.min) : c.WorldToViewportPoint(b.max));
             float screenEdgeValue = (p.IsHorizontal ? screenEdge.x : screenEdge.y);
@@ -531,7 +533,7 @@ public class FreeParallaxElement
                         float randX = UnityEngine.Random.Range(RepositionLogic.MinXPercent, RepositionLogic.MaxXPercent);
                         float randY = UnityEngine.Random.Range(RepositionLogic.MinYPercent, RepositionLogic.MaxYPercent);
                         Vector3 newWorldPoint = c.ViewportToWorldPoint(new Vector3(randX, randY));
-                        FreeParallax.SetPosition(obj, r, leftEdge.x - newWorldPoint.x, newWorldPoint.y);
+                        FreeParallax.SetPosition(obj, r, leftEdge.x - newWorldPoint.x, y);
                     }
                 }
                 else if (t < 0 && (screenEdge.y >= c.rect.height || screenEdge.x < minEdge))
@@ -546,7 +548,7 @@ public class FreeParallaxElement
                         float randX = UnityEngine.Random.Range(RepositionLogic.MinXPercent, RepositionLogic.MaxXPercent);
                         float randY = UnityEngine.Random.Range(RepositionLogic.MinYPercent, RepositionLogic.MaxYPercent);
                         Vector3 newWorldPoint = c.ViewportToWorldPoint(new Vector3(randX, randY));
-                        FreeParallax.SetPosition(obj, r, rightEdge.x + newWorldPoint.x, newWorldPoint.y);
+                        FreeParallax.SetPosition(obj, r, rightEdge.x + newWorldPoint.x, y);
                     }
                 }
             }
@@ -564,7 +566,7 @@ public class FreeParallaxElement
                         float randX = UnityEngine.Random.Range(RepositionLogic.MinXPercent, RepositionLogic.MaxXPercent);
                         float randY = UnityEngine.Random.Range(RepositionLogic.MinYPercent, RepositionLogic.MaxYPercent);
                         Vector3 newWorldPoint = c.ViewportToWorldPoint(new Vector3(randX, randY));
-                        FreeParallax.SetPosition(obj, r, newWorldPoint.x, bottomEdge.y - newWorldPoint.y);
+                        FreeParallax.SetPosition(obj, r, newWorldPoint.x, y);
                     }
                 }
                 else if (t < 0 && (screenEdge.x >= c.rect.width || screenEdge.y < minEdge))
@@ -579,7 +581,7 @@ public class FreeParallaxElement
                         float randX = UnityEngine.Random.Range(RepositionLogic.MinXPercent, RepositionLogic.MaxXPercent);
                         float randY = UnityEngine.Random.Range(RepositionLogic.MinYPercent, RepositionLogic.MaxYPercent);
                         Vector3 newWorldPoint = c.ViewportToWorldPoint(new Vector3(randX, randY));
-                        FreeParallax.SetPosition(obj, r, newWorldPoint.x, topEdge.y + newWorldPoint.y);
+                        FreeParallax.SetPosition(obj, r, newWorldPoint.x, y);
                     }
                 }
             }
