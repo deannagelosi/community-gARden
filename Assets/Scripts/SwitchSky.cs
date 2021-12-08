@@ -25,12 +25,12 @@ public class SwitchSky : MonoBehaviour
         sceneHands = GameObject.FindGameObjectsWithTag("UserHand").Where(h => h.activeSelf == true).ToList();
         if (sceneHands.Count > 0)
         {
-            print($"I See {sceneHands.Count} active hands, particles activated");
+            //print($"I See {sceneHands.Count} active hands, particles activated");
             particles.SetActive(true);
         }
         else
         {
-            print("particles deactivated");
+            //print("particles deactivated");
             particles.SetActive(false);
         }
     }

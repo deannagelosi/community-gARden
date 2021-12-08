@@ -112,7 +112,8 @@ public class FindColor : MonoBehaviour
             new Color(0.833f, 0.542f, 0.275f),
             new Color(0.752f, 0.558f, 0.344f),
             new Color(0.447f, 0.309f, 0.202f),
-            new Color(0.533f, 0.335f, 0.204f)
+            new Color(0.533f, 0.335f, 0.204f),
+            new Color(0.587f, 0.386f, 0.244f)
         };
         // Check if our current color is close to any of the pots
         for (int i = 0; i < pots.Length; i++)
