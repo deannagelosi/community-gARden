@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 65560824}
   - component: {fileID: 65560823}
   - component: {fileID: 65560822}
+  - component: {fileID: 65560825}
   m_Layer: 0
   m_Name: Projector_Left
   m_TagString: Untagged
@@ -218,6 +219,19 @@ Transform:
   m_Father: {fileID: 651606599}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &65560825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 65560821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62a6659faf6e3374d842e84974142000, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  proxyLeft: {fileID: 1645334486}
 --- !u!1 &69337481
 GameObject:
   m_ObjectHideFlags: 0
@@ -4556,8 +4570,8 @@ GameObject:
   - component: {fileID: 1645334489}
   - component: {fileID: 1645334488}
   m_Layer: 0
-  m_Name: ProxyLeftCamera
-  m_TagString: Untagged
+  m_Name: ProxyLeftProjector
+  m_TagString: ProxyLeft
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
