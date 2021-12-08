@@ -113,7 +113,15 @@ public class FindColor : MonoBehaviour
             new Color(0.752f, 0.558f, 0.344f),
             new Color(0.447f, 0.309f, 0.202f),
             new Color(0.533f, 0.335f, 0.204f),
-            new Color(0.587f, 0.386f, 0.244f)
+            new Color(0.587f, 0.386f, 0.244f),
+            new Color(0.748f, 0.545f, 0.384f),
+            new Color(0.722f, 0.468f, 0.286f),
+            new Color(0.678f, 0.487f, 0.354f),
+            new Color(0.906f, 0.893f, 0.797f),
+            new Color(0.857f, 0.636f, 0.418f),
+            new Color(0.895f, 0.662f, 0.450f),
+            new Color(0.804f, 0.566f, 0.358f),
+            new Color(0.818f, 0.597f, 0.377f)
         };
         // Check if our current color is close to any of the pots
         for (int i = 0; i < pots.Length; i++)
@@ -122,7 +130,7 @@ public class FindColor : MonoBehaviour
             float rDiff = Mathf.Abs(color.r - pot.r);
             float bDiff = Mathf.Abs(color.b - pot.b);
             float gDiff = Mathf.Abs(color.g - pot.g);
-            if (rDiff <= 0.1 && bDiff <= 0.1 && gDiff <= 0.1)
+            if (rDiff <= 0.15 && bDiff <= 0.15 && gDiff <= 0.15)
             {
                 return true;
             }
