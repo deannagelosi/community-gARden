@@ -844,6 +844,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   baseUIObject: {fileID: 1548763560798343653, guid: a202448a8828c1e4f9f602c025e02d21, type: 3}
   maxCameraDistance: 1
+  maxStepDistance: 0.02
 --- !u!1001 &371575842
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3949,7 +3950,6 @@ MonoBehaviour:
   - {fileID: 2050143469}
   maxBodies: 1
   skipConfidenceCheck: 1
-  proximityDistance: 0.15
 --- !u!1 &1455916862
 GameObject:
   m_ObjectHideFlags: 0
