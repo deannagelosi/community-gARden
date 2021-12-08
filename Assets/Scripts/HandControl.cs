@@ -65,17 +65,12 @@ namespace RoomAliveToolkit
             // Manage CURRENT hand game objects
             foreach (TrackedHand currHand in currFrameHands)
             {
-                if (currHand.frameMatch)
-                {
-                    // Not New. Retrieved this hand from the previous frame list
-                    currHand.handObject.transform.position = currHand.position;
-                }
-                else if (!currHand.frameMatch) // || currHand.handObject == null (and move this up one check ^)
+                if (!currHand.frameMatch || currHand.handObject == null)
                 {
                     // New. This hand was not seen in the previous frame
                     currHand.handObject = getHandObject(currHand.handID);
-                    currHand.handObject.transform.position = currHand.position;
                 }
+                currHand.handObject.transform.position = currHand.position;
             }
 
             // Manage PREVIOUS hand game objects
@@ -86,7 +81,6 @@ namespace RoomAliveToolkit
             }
 
             // Save current matches for the next frame
-            // prevFrameHands = new List<TrackedHand>();
             prevFrameHands = currFrameHands;
         }
 
@@ -257,8 +251,8 @@ namespace RoomAliveToolkit
                 handObject.transform.parent = gameObject.transform.parent.transform;
             }
             handObject.SetActive(true);
-            handObject.GetComponent<HandState>().handID = null;
-            handObject.GetComponent<HandState>().handID = handID;
+            handObject.GetComponent<ObjState>().trackingID = null;
+            handObject.GetComponent<ObjState>().trackingID = handID;
 
             return handObject;
         }
@@ -269,7 +263,7 @@ namespace RoomAliveToolkit
             if (hand.handObject != null)
             {
                 hand.handObject.SetActive(false);
-                hand.handObject.GetComponent<HandState>().handID = null;
+                hand.handObject.GetComponent<ObjState>().trackingID = null;
                 inactiveHands.Add(hand.handObject);
             }
         }

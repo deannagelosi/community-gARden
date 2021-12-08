@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3203566547261332895}
+  - component: {fileID: -4447547193524276222}
   - component: {fileID: 3203566547261332868}
   - component: {fileID: 3203566547261332867}
   - component: {fileID: 3203566547261332865}
   - component: {fileID: 3203566547261332864}
-  - component: {fileID: -4447547193524276222}
   m_Layer: 0
   m_Name: UserHand
   m_TagString: UserHand
@@ -35,6 +35,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-4447547193524276222
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3203566547261332894}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dc87d49a3279754f91c4c7d2e420ced, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trackingID: 
 --- !u!33 &3203566547261332868
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -113,15 +126,3 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &-4447547193524276222
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3203566547261332894}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5dc87d49a3279754f91c4c7d2e420ced, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

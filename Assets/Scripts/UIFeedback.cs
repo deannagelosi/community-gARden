@@ -6,14 +6,11 @@ using UnityEngine;
 public class UIFeedback : MonoBehaviour
 {
     public GameObject baseUIObject;
+    public int maxCameraDistance = 1; // used to control ui dot color temp
+
     private List<GameObject> sceneHands = new List<GameObject>();
-    private List<GameObject> inactiveUIObjects = new List<GameObject>();
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
+    private List<GameObject> activeUIObjs = new List<GameObject>();
+    private List<GameObject> inactiveUIObjs = new List<GameObject>();
 
     // Update is called once per frame
     void Update()
@@ -22,39 +19,64 @@ public class UIFeedback : MonoBehaviour
 
         if (sceneHands.Count > 0)
         {
-            print($"I See {sceneHands.Count} active hands");
-            // show ui element at correct x and y, 0 z
-            // change color as user gets closer to the correct z range (hot/cold)
             foreach (GameObject hand in sceneHands)
             {
-                // getUIObject
-                // to do: dont get if already got. carry over from previous frame
+                string trackingID = hand.GetComponent<ObjState>().trackingID;
+                Vector3 wallPos = new Vector3(hand.transform.position.x, hand.transform.position.y, 0.0f);
+
+                // Search active UI dots. Update or setup dot for each hand in scene
+                GameObject uiWallOBj = activeUIObjs.Find(o => trackingID == o.GetComponent<ObjState>().trackingID);
+                if (uiWallOBj == null)
+                {
+                    uiWallOBj = getUIObject(trackingID);
+                }
+                uiWallOBj.transform.position = wallPos;
+
+                // Change color based on distance to wall
+                Color colorStart = Color.red;
+                Color colorAlpha = Color.white;
+                float distWall = Vector3.Distance(uiWallOBj.transform.position, hand.transform.position);
+                uiWallOBj.GetComponent<Renderer>().material.color = Color.Lerp(colorStart, colorAlpha, distWall / maxCameraDistance);
             }
-
-
-
         }
 
+        List<GameObject> discardThese = new List<GameObject>();
+        foreach (GameObject uiObj in activeUIObjs)
+        {
+            // Is there a matching scene hand?
+            string objID = uiObj.GetComponent<ObjState>().trackingID;
+
+            GameObject foundHand = sceneHands.Find(h => h.GetComponent<ObjState>().trackingID == objID);
+            if (foundHand == null)
+            {
+                discardThese.Add(uiObj);
+            }
+        }
+        discardThese.ForEach(o => discardUIObject(o));
     }
 
     // Reuse existing disabled UI elements
-    private GameObject getUIObject()
+    private GameObject getUIObject(string trackingID)
     {
         // Recycle old inactive hand if available, or make a new one
-        GameObject UIObject;
+        GameObject uiObject;
 
-        if (inactiveUIObjects.Count > 0)
+        if (inactiveUIObjs.Count > 0)
         {
-            UIObject = inactiveUIObjects[0];
-            inactiveUIObjects.RemoveAt(0);
+            uiObject = inactiveUIObjs[0];
+            inactiveUIObjs.RemoveAt(0);
         }
         else
         {
-            UIObject = Instantiate(baseUIObject, new Vector3(0, 0, 0), Quaternion.identity);
-            UIObject.transform.parent = gameObject.transform.parent.transform;
+            uiObject = Instantiate(baseUIObject, new Vector3(0, 0, 0), Quaternion.identity);
+            uiObject.transform.parent = gameObject.transform.parent.transform;
         }
-        UIObject.SetActive(true);
-        return UIObject;
+
+        uiObject.GetComponent<ObjState>().trackingID = null;
+        uiObject.GetComponent<ObjState>().trackingID = trackingID;
+        uiObject.SetActive(true);
+        activeUIObjs.Add(uiObject);
+        return uiObject;
     }
 
     private void discardUIObject(GameObject uiObj)
@@ -63,7 +85,8 @@ public class UIFeedback : MonoBehaviour
         if (uiObj != null)
         {
             uiObj.SetActive(false);
-            inactiveUIObjects.Add(uiObj);
+            inactiveUIObjs.Add(uiObj);
+            activeUIObjs.Remove(uiObj);
         }
     }
 }
