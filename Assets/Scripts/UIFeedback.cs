@@ -7,6 +7,7 @@ public class UIFeedback : MonoBehaviour
 {
     public GameObject baseUIObject;
     public int maxCameraDistance = 1; // used to control ui dot color temp
+    public float maxStepDistance = 0.02f; // stops the ui element from shaking as it moves
 
     private List<GameObject> sceneHands = new List<GameObject>();
     private List<GameObject> activeUIObjs = new List<GameObject>();
@@ -26,17 +27,29 @@ public class UIFeedback : MonoBehaviour
 
                 // Search active UI dots. Update or setup dot for each hand in scene
                 GameObject uiWallOBj = activeUIObjs.Find(o => trackingID == o.GetComponent<ObjState>().trackingID);
-                if (uiWallOBj == null)
+
+                if (uiWallOBj != null)
+                {
+                    // There is an active ui dot
+                    float dist = Vector3.Distance(uiWallOBj.transform.position, wallPos);
+                    if (dist > maxStepDistance) // Don't move if "close enough" already
+                    {
+                        // Use MoveToward for a smooth position update
+                        Vector3 currentPosition = uiWallOBj.transform.position;
+                        uiWallOBj.transform.position = Vector3.MoveTowards(currentPosition, wallPos, maxStepDistance);
+                    }
+                }
+                else if (uiWallOBj == null)
                 {
                     uiWallOBj = getUIObject(trackingID);
+                    uiWallOBj.transform.position = wallPos;
                 }
-                uiWallOBj.transform.position = wallPos;
 
                 // Change color based on distance to wall
-                Color colorStart = Color.red;
-                Color colorAlpha = Color.white;
-                float distWall = Vector3.Distance(uiWallOBj.transform.position, hand.transform.position);
-                uiWallOBj.GetComponent<Renderer>().material.color = Color.Lerp(colorStart, colorAlpha, distWall / maxCameraDistance);
+                //Color colorStart = Color.red;
+                //Color colorAlpha = Color.white;
+                //float distWall = Vector3.Distance(uiWallOBj.transform.position, hand.transform.position);
+                //uiWallOBj.GetComponent<Renderer>().material.color = Color.Lerp(colorStart, colorAlpha, distWall / maxCameraDistance);
             }
         }
 

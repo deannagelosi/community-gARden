@@ -15,19 +15,18 @@ namespace RoomAliveToolkit
         public string handID { get; set; }
         public Vector3 providerPosition { get; set; }
         public Vector3 position { get; set; }
-        public bool frameMatch;
-        public GameObject handObject;
+        public bool frameMatch { get; set; }
+        public GameObject handObject { get; set; }
     }
 
     // Main HandControl program
     public class HandControl : MonoBehaviour
     {
         public GameObject baseHandObj;
-        public float mergeDistance = 0.15f; // when hand objects are this close together, merge them
+        public float mergeDistance = 0.20f; // when hand objects are this close together, merge them
         public List<RATSkeletonProvider> skeletonProviders;
         public int maxBodies = 1; // Track 1 skeleton by default (Kinect can track up to 6)
         public bool skipConfidenceCheck = true; // skip checking if hand confidence is 1 (high)
-        public float proximityDistance = 0.15f; // Default to hand object colision mesh diameter
 
         // Collect inactive hands for re-use (instead of instantiating more and more)
         private List<GameObject> inactiveHands = new List<GameObject>();
@@ -122,7 +121,7 @@ namespace RoomAliveToolkit
             foreach (TrackedHand hand in handsList)
             {
                 // Find all other hands in proximity (including itself)
-                List<TrackedHand> handsNear = handsList.FindAll(h => Vector3.Distance(hand.position, h.position) <= proximityDistance);
+                List<TrackedHand> handsNear = handsList.FindAll(h => Vector3.Distance(hand.position, h.position) <= mergeDistance);
 
                 if (handsNear.Count > 1)
                 {

@@ -265,7 +265,7 @@ Transform:
   - {fileID: 1713083931}
   - {fileID: 1067086796}
   m_Father: {fileID: 155527203}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &149233833
 GameObject:
@@ -359,12 +359,11 @@ Transform:
   m_LocalScale: {x: 0.145, y: 0.145, z: 0.145}
   m_Children:
   - {fileID: 1109251017}
-  - {fileID: 1282689616}
-  - {fileID: 1609316079}
   - {fileID: 69337482}
   - {fileID: 744745502}
   - {fileID: 1555631810}
   - {fileID: 1960045987}
+  - {fileID: 1314491756}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -746,7 +745,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4220957919402026, guid: 8d95bf3fd05e8ba4abc7313c2defb5a6, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.2799997
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4220957919402026, guid: 8d95bf3fd05e8ba4abc7313c2defb5a6, type: 3}
       propertyPath: m_LocalRotation.w
@@ -777,8 +776,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 198699721624583334, guid: 8d95bf3fd05e8ba4abc7313c2defb5a6, type: 3}
+      propertyPath: ClampVelocityModule.dampen
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 198699721624583334, guid: 8d95bf3fd05e8ba4abc7313c2defb5a6, type: 3}
+      propertyPath: ClampVelocityModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 198699721624583334, guid: 8d95bf3fd05e8ba4abc7313c2defb5a6, type: 3}
       propertyPath: InitialModule.maxNumParticles
-      value: 20
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 198699721624583334, guid: 8d95bf3fd05e8ba4abc7313c2defb5a6, type: 3}
       propertyPath: InitialModule.startSize.scalar
@@ -787,6 +794,14 @@ PrefabInstance:
     - target: {fileID: 198699721624583334, guid: 8d95bf3fd05e8ba4abc7313c2defb5a6, type: 3}
       propertyPath: InitialModule.startSpeed.scalar
       value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 198699721624583334, guid: 8d95bf3fd05e8ba4abc7313c2defb5a6, type: 3}
+      propertyPath: EmissionModule.rateOverTime.scalar
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 198699721624583334, guid: 8d95bf3fd05e8ba4abc7313c2defb5a6, type: 3}
+      propertyPath: ClampVelocityModule.magnitude.scalar
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 199389240779393614, guid: 8d95bf3fd05e8ba4abc7313c2defb5a6, type: 3}
       propertyPath: m_SortingOrder
@@ -842,8 +857,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f217d06fbf2d4e84aa40999caac3911b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  baseUIObject: {fileID: 8360857019383888523, guid: 9e50a38bbf9e25a4e86d38b2bc402780, type: 3}
+  baseUIObject: {fileID: 1548763560798343653, guid: a202448a8828c1e4f9f602c025e02d21, type: 3}
   maxCameraDistance: 1
+  maxStepDistance: 0.02
 --- !u!1001 &371575842
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1799,7 +1815,7 @@ Transform:
   - {fileID: 1181788845}
   - {fileID: 677105080}
   m_Father: {fileID: 155527203}
-  m_RootOrder: 4
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &795203252
 GameObject:
@@ -2087,7 +2103,7 @@ MonoBehaviour:
   streamingMode: 0
   startOnAwake: 0
   loopPlayback: 0
-  streamFolder: Assets/KinectRecordings/VizLab0/HandTest/
+  streamFolder: Assets/KinectRecordings/VizLab0/PotRecording/
   trimProCamPlayback: 0
   depthFramesTrimFromStart: 0
   depthFramesTrimFromEnd: 0
@@ -3033,7 +3049,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4220957919402026, guid: e527a7159c739bd419dc48b7002837de, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.490002
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4220957919402026, guid: e527a7159c739bd419dc48b7002837de, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3064,8 +3080,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 198699721624583334, guid: e527a7159c739bd419dc48b7002837de, type: 3}
+      propertyPath: ClampVelocityModule.dampen
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 198699721624583334, guid: e527a7159c739bd419dc48b7002837de, type: 3}
+      propertyPath: ClampVelocityModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 198699721624583334, guid: e527a7159c739bd419dc48b7002837de, type: 3}
       propertyPath: InitialModule.maxNumParticles
-      value: 20
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 198699721624583334, guid: e527a7159c739bd419dc48b7002837de, type: 3}
       propertyPath: InitialModule.startSize.scalar
@@ -3074,6 +3098,14 @@ PrefabInstance:
     - target: {fileID: 198699721624583334, guid: e527a7159c739bd419dc48b7002837de, type: 3}
       propertyPath: InitialModule.startSpeed.scalar
       value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 198699721624583334, guid: e527a7159c739bd419dc48b7002837de, type: 3}
+      propertyPath: EmissionModule.rateOverTime.scalar
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 198699721624583334, guid: e527a7159c739bd419dc48b7002837de, type: 3}
+      propertyPath: ClampVelocityModule.magnitude.scalar
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 199389240779393614, guid: e527a7159c739bd419dc48b7002837de, type: 3}
       propertyPath: m_SortingOrder
@@ -3534,8 +3566,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1282689614}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.6, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.6000001, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1155382154}
@@ -3549,8 +3581,8 @@ Transform:
   - {fileID: 1261537701}
   - {fileID: 1058447525}
   - {fileID: 231996003}
-  m_Father: {fileID: 155527203}
-  m_RootOrder: 1
+  m_Father: {fileID: 1314491756}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!21 &1292166028
 Material:
@@ -3804,6 +3836,38 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1301349497}
   m_Mesh: {fileID: 4300000, guid: 6e0f4c376ca6bff49907dff8600c9f9b, type: 3}
+--- !u!1 &1314491755
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1314491756}
+  m_Layer: 9
+  m_Name: Ground/Mountain
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1314491756
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1314491755}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -1.23, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1282689616}
+  - {fileID: 1609316079}
+  m_Father: {fileID: 155527203}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1370499085
 GameObject:
   m_ObjectHideFlags: 0
@@ -3949,7 +4013,6 @@ MonoBehaviour:
   - {fileID: 2050143469}
   maxBodies: 1
   skipConfidenceCheck: 1
-  proximityDistance: 0.15
 --- !u!1 &1455916862
 GameObject:
   m_ObjectHideFlags: 0
@@ -4197,7 +4260,7 @@ Transform:
   - {fileID: 1300552184}
   - {fileID: 997189918}
   m_Father: {fileID: 155527203}
-  m_RootOrder: 5
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1566972551
 GameObject:
@@ -4385,14 +4448,14 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1609316077}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.26, y: -3.25, z: 0}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.25999957, y: -3.25, z: 0}
   m_LocalScale: {x: 1, y: 0.8455415, z: 1}
   m_Children:
   - {fileID: 1616408936}
   - {fileID: 1993337232}
-  m_Father: {fileID: 155527203}
-  m_RootOrder: 2
+  m_Father: {fileID: 1314491756}
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1616408935
 GameObject:
@@ -4944,6 +5007,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 9
       objectReference: {fileID: 0}
+    - target: {fileID: 120030, guid: 0d26c69a68550ea4481b009d80f15477, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 137682, guid: 0d26c69a68550ea4481b009d80f15477, type: 3}
       propertyPath: m_Layer
       value: 9
@@ -5022,11 +5089,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 19887696, guid: 0d26c69a68550ea4481b009d80f15477, type: 3}
       propertyPath: InitialModule.startSize.scalar
-      value: 0.05
+      value: 0.025
       objectReference: {fileID: 0}
     - target: {fileID: 19887696, guid: 0d26c69a68550ea4481b009d80f15477, type: 3}
       propertyPath: InitialModule.startSize.minScalar
-      value: 0.05
+      value: 0.025
       objectReference: {fileID: 0}
     - target: {fileID: 19887696, guid: 0d26c69a68550ea4481b009d80f15477, type: 3}
       propertyPath: EmissionModule.rateOverTime.scalar
@@ -5035,6 +5102,18 @@ PrefabInstance:
     - target: {fileID: 19887696, guid: 0d26c69a68550ea4481b009d80f15477, type: 3}
       propertyPath: CollisionModule.collidesWith.m_Bits
       value: 3127
+      objectReference: {fileID: 0}
+    - target: {fileID: 19887696, guid: 0d26c69a68550ea4481b009d80f15477, type: 3}
+      propertyPath: InitialModule.startSize.minMaxState
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 19887696, guid: 0d26c69a68550ea4481b009d80f15477, type: 3}
+      propertyPath: InitialModule.startSizeY.minMaxState
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 19887696, guid: 0d26c69a68550ea4481b009d80f15477, type: 3}
+      propertyPath: InitialModule.startSizeZ.minMaxState
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 19887696, guid: 0d26c69a68550ea4481b009d80f15477, type: 3}
       propertyPath: SubModule.subEmitters.Array.data[0].properties
@@ -5549,7 +5628,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4200390804438330, guid: 6e3f36c876024d94485d2bdb38454c0f, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -6.9700007
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4200390804438330, guid: 6e3f36c876024d94485d2bdb38454c0f, type: 3}
       propertyPath: m_LocalRotation.w
@@ -5580,8 +5659,16 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 198686884241459516, guid: 6e3f36c876024d94485d2bdb38454c0f, type: 3}
+      propertyPath: ClampVelocityModule.dampen
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 198686884241459516, guid: 6e3f36c876024d94485d2bdb38454c0f, type: 3}
+      propertyPath: ClampVelocityModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 198686884241459516, guid: 6e3f36c876024d94485d2bdb38454c0f, type: 3}
       propertyPath: InitialModule.maxNumParticles
-      value: 20
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 198686884241459516, guid: 6e3f36c876024d94485d2bdb38454c0f, type: 3}
       propertyPath: InitialModule.startSize.scalar
@@ -5590,6 +5677,14 @@ PrefabInstance:
     - target: {fileID: 198686884241459516, guid: 6e3f36c876024d94485d2bdb38454c0f, type: 3}
       propertyPath: InitialModule.startSpeed.scalar
       value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 198686884241459516, guid: 6e3f36c876024d94485d2bdb38454c0f, type: 3}
+      propertyPath: EmissionModule.rateOverTime.scalar
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 198686884241459516, guid: 6e3f36c876024d94485d2bdb38454c0f, type: 3}
+      propertyPath: ClampVelocityModule.magnitude.scalar
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 199606750525270878, guid: 6e3f36c876024d94485d2bdb38454c0f, type: 3}
       propertyPath: m_SortingOrder
@@ -5761,7 +5856,7 @@ Transform:
   m_LocalScale: {x: 6.8965516, y: 6.8965516, z: 6.8965516}
   m_Children: []
   m_Father: {fileID: 155527203}
-  m_RootOrder: 6
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1962948062
 GameObject:
